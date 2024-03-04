@@ -1,0 +1,143 @@
+<head>
+  <link href="../favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+  <link href="../style.css" rel="stylesheet"/>
+  <title>BQN: The array</title>
+</head>
+<div class="nav">(<a href="https://github.com/mlochbaum/BQN">github</a>) / <a href="../index.html">BQN</a> / <a href="index.html">doc</a></div>
+<h1 id="the-array"><a class="header" href="#the-array">The array</a></h1>
+<p>As BQN is an array language, it's often helpful to understand what an array is when writing BQN programs. Fully describing the concept is sometimes <a href="https://www.jsoftware.com/papers/array.htm">held to be tricky</a>; here we'll see definitions, examples, and metaphors.</p>
+<p>In BQN, as in APL, arrays are multidimensional, instead of strictly linear. Languages like Python, Javascript, or Haskell offer only one-dimensional arrays with <code><span class='Bracket'>[]</span></code> syntax, and typically represent multidimensional data with nested arrays. Multidimensional arrays have fundamental differences relative to this model.</p>
+<p>BQN's arrays are immutable, meaning that an array is entirely defined by its attributes, and there's no way to modify an existing array, only to produce another array that has changes relative to it. As a result, an array can never contain itself. BQN's <a href="lexical.html#mutation">mutable</a> types are operations and namespaces.</p>
+<p>An array might also have a <a href="fill.html">fill element</a> that captures some structural information about its elements and is used by a few operations. As an inferred property, the fill isn't considered to truly be part of the array, but is instead some information about it that the interpreter keeps track of. So it's out of scope here.</p>
+<svg viewBox='-36 -15 544 426'>
+  <g fill='currentColor' stroke-linecap='round' text-anchor='middle' font-size='14' font-family='BQN,monospace'>
+    <rect class='code' stroke-width='1.5' rx='12' x='-4' y='0' width='480' height='396'/>
+    <g font-size='24px' opacity='0.9' text-anchor='start'><text dy='0.33em' x='23' y='-2'>Array properties</text></g>
+    <rect fill='#7f651c' opacity='0.1' x='281' y='14' width='46' height='368'/>
+    <path class='bluegreen' stroke-width='3' style='fill:none' opacity='0.8' d='M440 377h21v-21M114.5 83h-31.5v31.5m0 16v12'/>
+    <g font-size='18px' text-anchor='end'>
+      <text dy='0.33em' x='128' y='104'><tspan class='Number'>4</tspan></text>
+      <text dy='0.33em' x='192' y='104'><tspan class='Number'>25</tspan></text>
+      <text dy='0.33em' x='256' y='104'><tspan class='Number'>64</tspan></text>
+      <text dy='0.33em' x='320' y='104'><tspan class='Number'>121</tspan></text>
+      <text dy='0.33em' x='384' y='104'><tspan class='Number'>196</tspan></text>
+      <text dy='0.33em' x='448' y='104'><tspan class='Number'>4</tspan></text>
+      <text dy='0.33em' x='128' y='140'><tspan class='Number'>25</tspan></text>
+      <text dy='0.33em' x='192' y='140'><tspan class='Number'>64</tspan></text>
+      <text dy='0.33em' x='256' y='140'><tspan class='Number'>121</tspan></text>
+      <text dy='0.33em' x='320' y='140'><tspan class='Number'>196</tspan></text>
+      <text dy='0.33em' x='384' y='140'><tspan class='Number'>4</tspan></text>
+      <text dy='0.33em' x='448' y='140'><tspan class='Number'>25</tspan></text>
+      <text dy='0.33em' x='128' y='212'><tspan class='Number'>64</tspan></text>
+      <text dy='0.33em' x='192' y='212'><tspan class='Number'>121</tspan></text>
+      <text dy='0.33em' x='256' y='212'><tspan class='Number'>196</tspan></text>
+      <text dy='0.33em' x='320' y='212'><tspan class='Number'>4</tspan></text>
+      <text dy='0.33em' x='384' y='212'><tspan class='Number'>25</tspan></text>
+      <text dy='0.33em' x='448' y='212'><tspan class='Number'>64</tspan></text>
+      <text dy='0.33em' x='128' y='248'><tspan class='Number'>121</tspan></text>
+      <text dy='0.33em' x='192' y='248'><tspan class='Number'>196</tspan></text>
+      <text dy='0.33em' x='256' y='248'><tspan class='Number'>4</tspan></text>
+      <text dy='0.33em' x='320' y='248'><tspan class='Number'>25</tspan></text>
+      <text dy='0.33em' x='384' y='248'><tspan class='Number'>64</tspan></text>
+      <text dy='0.33em' x='448' y='248'><tspan class='Number'>121</tspan></text>
+      <text dy='0.33em' x='128' y='320'><tspan class='Number'>196</tspan></text>
+      <text dy='0.33em' x='192' y='320'><tspan class='Number'>4</tspan></text>
+      <text dy='0.33em' x='256' y='320'><tspan class='Number'>25</tspan></text>
+      <text dy='0.33em' x='320' y='320'><tspan class='Number'>64</tspan></text>
+      <text dy='0.33em' x='384' y='320'><tspan class='Number'>121</tspan></text>
+      <text dy='0.33em' x='448' y='320'><tspan class='Number'>196</tspan></text>
+      <text dy='0.33em' x='128' y='356'><tspan class='Number'>4</tspan></text>
+      <text dy='0.33em' x='192' y='356'><tspan class='Number'>25</tspan></text>
+      <text dy='0.33em' x='256' y='356'><tspan class='Number'>64</tspan></text>
+      <text dy='0.33em' x='320' y='356'><tspan class='Number'>121</tspan></text>
+      <text dy='0.33em' x='384' y='356'><tspan class='Number'>196</tspan></text>
+      <text dy='0.33em' x='448' y='356'><tspan class='Number'>4</tspan></text>
+    </g>
+    <g font-size='18' transform='rotate(-90)'><text dy='0.33em' x='-284' y='54.4'>Axis 0</text></g>
+    <text dy='0.33em' x='304' y='39.2'>Position 3</text>
+    <g transform='translate(304,320)'>
+      <path class='purple' stroke-width='2' style='fill:none' d='M-22.4 -16.2h44.8v32.4h-44.8z'/>
+      <text dy='0.33em' x='0' y='-43.2'>Element at 2‿0‿3</text>
+      <text dy='0.33em' x='0' y='-27'>Value 64</text>
+    </g>
+    <g class='yellow'>
+      <g font-size='22px'>
+        <text dy='0.33em' x='22.4' y='77'>3</text>
+        <text dy='0.33em' x='54.4' y='73.4'>2</text>
+        <text dy='0.33em' x='80' y='66.2'>6</text>
+      </g>
+      <text dy='0.33em' x='41.6' y='53.6'>Shape</text>
+    </g>
+    <g class='bluegreen' font-size='16'><text dy='0.33em' x='51.2' y='33.8'>Rank 3</text></g>
+    <path stroke='currentColor' stroke-width='1.5' opacity='0.1' d='M89.6 73.2H459.6M32 93.2V381.2M64 93.2V155.2'/>
+    <path class='purple' stroke-width='2' style='fill:none' d='M89.6 57.2v16h50v6M153.6 57.2v16h50v6M217.6 57.2v16h50v6M281.6 57.2v16h50v6M345.6 57.2v16h50v6M409.6 57.2v16h50v6M16 93.2h16v72h6M16 201.2h16v72h6M16 309.2h16v72h6M48 93.2h16v26h6M48 129.2h16v26h6'/>
+    <text dy='0.33em' x='97.6' y='65.2'>0</text>
+    <text dy='0.33em' x='161.6' y='65.2'>1</text>
+    <text dy='0.33em' x='225.6' y='65.2'>2</text>
+    <text dy='0.33em' x='289.6' y='65.2'>3</text>
+    <text dy='0.33em' x='353.6' y='65.2'>4</text>
+    <text dy='0.33em' x='417.6' y='65.2'>5</text>
+    <text dy='0.33em' x='24' y='101.2'>0</text>
+    <text dy='0.33em' x='24' y='209.2'>1</text>
+    <text dy='0.33em' x='24' y='317.2'>2</text>
+    <text dy='0.33em' x='56' y='101.2'>0</text>
+    <text dy='0.33em' x='56' y='137.2'>1</text>
+  </g>
+</svg>
+
+<h2 id="rectangles"><a class="header" href="#rectangles">Rectangles</a></h2>
+<p>A BQN <strong>array</strong> is a multidimensional arrangement of data. The word &quot;array&quot; descends from words meaning &quot;order&quot;, and the data in an array is ordered indeed. Below are examples of arrays with zero, one, and two dimensions.</p>
+<a class="replLink" title="Open in the REPL" target="_blank" href="https://mlochbaum.github.io/BQN/try.html#code=PDUKCuKfqDMsJ3gnLDHin6kKCjLigL8z4oC/NCDDl+KMnCAx4oC/NeKAvzjigL8xMQ==">↗️</a><pre>    <span class='Function'>&lt;</span><span class='Number'>5</span>
+┌·   
+· 5  
+    ┘
+
+    <span class='Bracket'>⟨</span><span class='Number'>3</span><span class='Separator'>,</span><span class='String'>'x'</span><span class='Separator'>,</span><span class='Number'>1</span><span class='Bracket'>⟩</span>
+⟨ 3 'x' 1 ⟩
+
+    <span class='Number'>2</span><span class='Ligature'>‿</span><span class='Number'>3</span><span class='Ligature'>‿</span><span class='Number'>4</span> <span class='Function'>×</span><span class='Modifier'>⌜</span> <span class='Number'>1</span><span class='Ligature'>‿</span><span class='Number'>5</span><span class='Ligature'>‿</span><span class='Number'>8</span><span class='Ligature'>‿</span><span class='Number'>11</span>
+┌─            
+╵ 2 10 16 22  
+  3 15 24 33  
+  4 20 32 44  
+             ┘
+</pre>
+<p>Each dimension, or <strong>axis</strong>, has some finite number of positions, with an <strong>element</strong> at every <em>combination</em> of positions. For example, if a group of friends shop at several different stores, the amount they spend in a week could be placed in a two-dimensional array, with people along one axis and stores along another. An element of the array would indicate how much one person spent at one store, so that summing across stores gives each person's expenditures and summing across people gives each store's income.</p>
+<p>The axes of an array must be independent, that is, the positions present in one axis are fixed for the entire array and don't depend on other axes. This is a difference relative to a nested list model. When storing data in nested lists, the outer axis comes first and later axes are subordinate to it. The length of the second axis depends completely on the position in the first. A programmer might choose the lengths so it doesn't in a particular case, but in a BQN array differing lengths simply aren't representable.</p>
+<p>The array also needs to be complete. Every element—every combination of positions—must have a value. This value could be a placeholder like <code><span class='String'>@</span></code>, but it has to be <em>something</em> (in the spending example, everyone spends some amount at each store, even if it's zero). And of course, there are no extra elements that don't fit into the positioning system—the <a href="fill.html">fill</a> isn't really part of the array, but extra information about it.</p>
+<h2 id="ordering-and-indices"><a class="header" href="#ordering-and-indices">Ordering and indices</a></h2>
+<p>To finish this definition of an array we also need to nail down the idea of a position. The positions along one dimension can't have labels attached to them, but they have a linear ordering (mathematically speaking, a <a href="https://en.wikipedia.org/wiki/Total_order">total order</a>: out of any two different positions one comes earlier and the other later). BQN keeps track of this order: for example, when we <a href="join.html">join</a> two arrays it places positions in <code><span class='Value'>𝕨</span></code> before those of <code><span class='Value'>𝕩</span></code> and otherwise maintains the original orderings.</p>
+<a class="replLink" title="Open in the REPL" target="_blank" href="https://mlochbaum.github.io/BQN/try.html#code=ImJlZm9yZSIg4oi+ICJhZnRlciI=">↗️</a><pre>    <span class='String'>&quot;before&quot;</span> <span class='Function'>∾</span> <span class='String'>&quot;after&quot;</span>
+"beforeafter"
+</pre>
+<p>It's only the ordering that allows positions to be distinguished. BQN labels them with natural numbers called <strong>indices</strong> that can be derived from the order: the earliest position is called <code><span class='Number'>0</span></code>, the next <code><span class='Number'>1</span></code>, and so on. The axes of an array are also ordered, and they're indexed starting at <code><span class='Number'>0</span></code> as well.</p>
+<p>These kinds of index are one-dimensional, but there's also a multidimensional kind of array <a href="indices.html">index</a>, that identifies an element. An element index consists of one index along each axis. Because the axes are ordered, the element index can be represented as a list <code><span class='Value'>l</span></code> of numbers, where <code><span class='Value'>i</span><span class='Function'>⊑</span><span class='Value'>l</span></code> is the index along axis <code><span class='Value'>i</span></code>. It's important to distinguish an element from its value: for example, there's only one value (<code><span class='Number'>3</span></code>) contained in the array <code><span class='Bracket'>⟨</span><span class='Number'>3</span><span class='Separator'>,</span><span class='Number'>3</span><span class='Separator'>,</span><span class='Number'>3</span><span class='Bracket'>⟩</span></code>, but it still has three elements, identified by indices <code><span class='Bracket'>⟨</span><span class='Number'>0</span><span class='Bracket'>⟩</span></code>, <code><span class='Bracket'>⟨</span><span class='Number'>1</span><span class='Bracket'>⟩</span></code>, and <code><span class='Bracket'>⟨</span><span class='Number'>2</span><span class='Bracket'>⟩</span></code>.</p>
+<h2 id="dimensions"><a class="header" href="#dimensions">Dimensions</a></h2>
+<p>The number of axes in an array is called its <strong>rank</strong>. The number of positions along an axis is called its <strong>length</strong>, and the length of an array means its length along the first axis, or <code><span class='Number'>1</span></code> if there are no axes. The list of the lengths along each axis is the array's <strong>shape</strong>, and describes the possible element locations completely. In BQN they're exposed as the <a href="shape.html">functions</a> Rank (<code><span class='Function'>=</span></code>), Length (<code><span class='Function'>≠</span></code>), and Shape (<code><span class='Function'>≢</span></code>).</p>
+<p>The total number of elements in an array is its <strong>bound</strong>, and can be found using <a href="reshape.html">Deshape</a> with <code><span class='Function'>≠</span><span class='Modifier2'>∘</span><span class='Function'>⥊</span></code>, or by multiplying all the lengths in the shape. An array of rank 0, which always contains exactly one element, is called a <a href="enclose.html#whats-a-unit"><strong>unit</strong></a>, while an array of rank 1 is called a <strong>list</strong> and an array of rank 2 is called a <strong>table</strong>.</p>
+<h2 id="elements"><a class="header" href="#elements">Elements</a></h2>
+<p>Any BQN value can be used as an array element, including another array (BQN, as a dynamically-typed language, doesn't restrict the types that can be used in one context without a good reason). However, BQN arrays are in some sense restricted relative to other array models. Frameworks like NumPy or Julia have mutable arrays, so that the value of an element can be changed after the array is created. This allows an array to be its own element, by creating an array and then inserting it into itself. This would be unnatural in BQN, where an array can only be formed from elements that already exist. In BQN only operations and namespaces are <a href="lexical.html#mutation">mutable</a>.</p>
+<p>An array with no elements (a bound of 0) is called <strong>empty</strong>. These arrays can cause problems when a property should be computed from the elements of an array, like the sum <code><span class='Function'>+</span><span class='Modifier'>´</span><span class='Value'>𝕩</span></code> or shape of the <a href="couple.html#merge-and-array-theory">merged</a> array <code><span class='Function'>&gt;</span><span class='Value'>𝕩</span></code>. BQN has two mechanisms to make these cases work better. First, Fold (<code><span class='Modifier'>´</span></code>) and Insert (<code><span class='Modifier'>˝</span></code>) have <a href="fold.html#identity-values">identity values</a> for certain functions, so that <code><span class='Function'>+</span><span class='Modifier'>´</span><span class='Bracket'>⟨⟩</span></code> is <code><span class='Number'>0</span></code> for example. Second, every array might have a <a href="fill.html">fill element</a>, a special &quot;typical element&quot; for the array. Functions like Merge use this element's structure to determine the result shape when there are no actual elements to be used.</p>
+<h2 id="cells"><a class="header" href="#cells">Cells</a></h2>
+<p>The contents of an array are its elements, but it also makes sense to split up an array into subarrays of elements called cells. The most important kind of cell, a <strong>major cell</strong>, consists of all the elements whose indices begin with some particular index <code><span class='Value'>i</span></code>. For this to make sense, <code><span class='Value'>i</span></code> must be between <code><span class='Number'>0</span></code> and the length <code><span class='Value'>n</span></code> of the array's first axis, so that there are <code><span class='Value'>n</span></code> major cells each identified by an index.</p>
+<a class="replLink" title="Open in the REPL" target="_blank" href="https://mlochbaum.github.io/BQN/try.html#code=MuKAvzPigL80IMOX4oycIDHigL814oC/OOKAvzExCgoxIOKKjyAy4oC/M+KAvzQgw5fijJwgMeKAvzXigL844oC/MTEgICMgTWFqb3IgY2VsbCAx">↗️</a><pre>    <span class='Number'>2</span><span class='Ligature'>‿</span><span class='Number'>3</span><span class='Ligature'>‿</span><span class='Number'>4</span> <span class='Function'>×</span><span class='Modifier'>⌜</span> <span class='Number'>1</span><span class='Ligature'>‿</span><span class='Number'>5</span><span class='Ligature'>‿</span><span class='Number'>8</span><span class='Ligature'>‿</span><span class='Number'>11</span>
+┌─            
+╵ 2 10 16 22  
+  3 15 24 33  
+  4 20 32 44  
+             ┘
+
+    <span class='Number'>1</span> <span class='Function'>⊏</span> <span class='Number'>2</span><span class='Ligature'>‿</span><span class='Number'>3</span><span class='Ligature'>‿</span><span class='Number'>4</span> <span class='Function'>×</span><span class='Modifier'>⌜</span> <span class='Number'>1</span><span class='Ligature'>‿</span><span class='Number'>5</span><span class='Ligature'>‿</span><span class='Number'>8</span><span class='Ligature'>‿</span><span class='Number'>11</span>  <span class='Comment'># Major cell 1
+</span>⟨ 3 15 24 33 ⟩
+</pre>
+<p>A major cell still has an array structure: it retains all the axes of the original array other than the first. So it has its own major cells, identified by the index <code><span class='Value'>i</span></code> of the original major cell and <code><span class='Value'>j</span></code> within it. These are also cells of the original array. Generalizing, a <strong>cell</strong> with index list <code><span class='Value'>l</span></code> is defined to be the array of all elements whose indices begin with <code><span class='Value'>l</span></code>. In an array with rank <code><span class='Value'>r</span></code>, the cell rank is <code><span class='Value'>r</span><span class='Function'>-≠</span><span class='Value'>l</span></code>, and cells can be grouped using this rank. An <code><span class='Value'>r</span></code>-cell must have an empty cell index, so that it includes all elements—it's the entire array! An <code><span class='Value'>r</span><span class='Function'>-</span><span class='Number'>1</span></code> cell, also called a ¯1-cell, is a major cell. A 0-cell has an index of length <code><span class='Value'>r</span></code>, and contains a single element.</p>
+<p>Cells are the center of the <a href="leading.html">leading axis model</a> used to structure many array primitives.</p>
+<h2 id="properties"><a class="header" href="#properties">Properties</a></h2>
+<p>Summarizing, the values needed to define an array are its rank (the number of axes), its shape (the number of positions along each axis), and the value of each element (that is, at each combination of positions). Two arrays <a href="match.html">match</a> when all these values match.</p>
+<p>If the rank is considered to be part of the shape, as it is when the shape is a BQN list, then the array is defined by its shape, and element list as returned by <a href="reshape.html">deshape</a>.</p>
+<p>Here's a somewhat informal mathematical take. Given a set of possible element values <code><span class='Function'>T</span></code>, a <em>list</em> of <code><span class='Function'>T</span></code> of length <code><span class='Value'>l</span></code> is a map from natural numbers less than <code><span class='Value'>l</span></code> to <code><span class='Function'>T</span></code>. An array is a rank <code><span class='Value'>r</span></code>, along with a list <code><span class='Value'>s</span></code> of natural numbers of length <code><span class='Value'>r</span></code>, and a map from lists of natural numbers <code><span class='Value'>i</span></code> that satisfy <code><span class='Value'>i</span><span class='Paren'>(</span><span class='Value'>j</span><span class='Paren'>)</span> <span class='Function'>&lt;</span> <span class='Value'>s</span><span class='Paren'>(</span><span class='Value'>j</span><span class='Paren'>)</span></code> for all natural numbers <code><span class='Value'>j</span><span class='Function'>&lt;</span><span class='Value'>r</span></code> to BQN values. Arrays are an inductive type, so that an array can only be defined using elements that already exist. As a result, an array's elements are always values of lesser complexity than it: selecting one element of an array, then an element of that element, and so on, must eventually reach a non-array.</p>
+<h2 id="why-arrays"><a class="header" href="#why-arrays">Why arrays?</a></h2>
+<p>The multidimensional array is a fairly simple structure, but there are simpler ones like pairs, lists, sets, and dictionaries. Why does BQN choose the array for its central type? I don't think arrays are always the best data structure (or that BQN is always the best language), but I do think they're one of several good choices and have unique advantages.</p>
+<p>Arrays offer a lot of flexibility since they generalize lists. This also means that they can be used to represent pairs or sets. Two lists, or an array with a length-2 axis, can represent a map, although it could be hard to use with good performance.</p>
+<p>But arrays are less flexible than <em>nested</em> lists (which in turn are less flexible than nested arrays). This is also in some sense a strength. The axes of an array are inherently independent. Lots of things in real life are independent! Regardless of which main you choose in your Cook Out tray you have the same options for sides. A term in a multivariate polynomial can have any power of <code><span class='Value'>x</span></code> and any power of <code><span class='Value'>y</span></code>. An array language lets you encode this independence in your data, and use operations that take advantage of it.</p>
+<p>The rigidity of arrays is also great for performance. Nested lists might have a complicated structure in memory. An array can always be packed flat: the shape and the elements. This strided representation makes branchless and cache-friendly primitive algorithms much easier.</p>

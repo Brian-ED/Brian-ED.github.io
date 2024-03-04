@@ -1,0 +1,263 @@
+<head>
+  <link href="../favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+  <link href="../style.css" rel="stylesheet"/>
+  <title>BQN: Search functions</title>
+</head>
+<div class="nav">(<a href="https://github.com/mlochbaum/BQN">github</a>) / <a href="../index.html">BQN</a> / <a href="index.html">doc</a></div>
+<h1 id="search-functions"><a class="header" href="#search-functions">Search functions</a></h1>
+<svg viewBox='-124.8 -46.8 532.8 280.8'>
+  <defs>
+    <mask id='m'>
+      <linearGradient id='grad' x2='0' y2='1'>
+        <stop offset='0.6' stop-color='#000'/>
+        <stop offset='0.9' stop-color='#fff'/>
+      </linearGradient>
+      <rect fill='url(#grad)' x='-86.4' y='0' width='456' height='72'/>
+    </mask>
+  </defs>
+  <g font-family='BQN,monospace' font-size='19px' text-anchor='middle'>
+    <rect class='code' stroke-width='1.5' rx='12' x='-86.4' y='-36' width='456' height='259.2'/>
+    <g class='purple' stroke-width='0' opacity='0.5'>
+      <rect x='-76.8' y='106.2' width='436.8' height='32.4'/>
+      <rect x='-76.8' y='178.2' width='436.8' height='32.4'/>
+    </g>
+    <g class='lilac' stroke-linecap='round'>
+      <g stroke-width='1' stroke-dasharray='6,7'>
+        <line x1='99.84' x2='332.16' y1='60.48' y2='11.52'/>
+        <line mask='url(#m)' x1='243.84' x2='380.16' y1='60.48' y2='11.52'/>
+      </g>
+      <g stroke-width='1.5'>
+        <line x1='92.16' x2='3.84' y1='60.48' y2='11.52'/>
+        <line x1='236.16' x2='3.84' y1='60.48' y2='11.52'/>
+      </g>
+      <g stroke-width='3'>
+        <line x1='3.84' x2='44.16' y1='60.48' y2='11.52'/>
+        <line x1='44.16' x2='3.84' y1='60.48' y2='11.52'/>
+        <line x1='140.16' x2='99.84' y1='60.48' y2='11.52'/>
+        <line mask='url(#m)' x1='195.84' x2='380.16' y1='60.48' y2='11.52'/>
+      </g>
+    </g>
+    <g fill='currentColor' font-size='12' opacity='0.75'>
+      <text dy='0.32em' x='0' y='-17.28'>0</text>
+      <text dy='0.32em' x='48' y='-17.28'>1</text>
+      <text dy='0.32em' x='96' y='-17.28'>2</text>
+      <text dy='0.32em' x='144' y='-17.28'>3</text>
+      <text dy='0.32em' x='192' y='-17.28'>4</text>
+      <text dy='0.32em' x='240' y='-17.28'>5</text>
+      <text dy='0.32em' x='288' y='-17.28'>6</text>
+      <text dy='0.32em' x='336' y='-17.28'>7</text>
+    </g>
+    <text dy='0.32em' x='0' y='0'><tspan class='String'>'s'</tspan></text>
+    <text dy='0.32em' x='48' y='0'><tspan class='String'>'e'</tspan></text>
+    <text dy='0.32em' x='96' y='0'><tspan class='String'>'a'</tspan></text>
+    <text dy='0.32em' x='144' y='0'><tspan class='String'>'r'</tspan></text>
+    <text dy='0.32em' x='192' y='0'><tspan class='String'>'c'</tspan></text>
+    <text dy='0.32em' x='240' y='0'><tspan class='String'>'h'</tspan></text>
+    <text dy='0.32em' x='288' y='0'><tspan class='String'>'e'</tspan></text>
+    <text dy='0.32em' x='336' y='0'><tspan class='String'>'s'</tspan></text>
+    <text dy='0.32em' x='0' y='72'><tspan class='String'>'e'</tspan></text>
+    <text dy='0.32em' x='48' y='72'><tspan class='String'>'s'</tspan></text>
+    <text dy='0.32em' x='96' y='72'><tspan class='String'>'s'</tspan></text>
+    <text dy='0.32em' x='144' y='72'><tspan class='String'>'a'</tspan></text>
+    <text dy='0.32em' x='192' y='72'><tspan class='String'>'y'</tspan></text>
+    <text dy='0.32em' x='240' y='72'><tspan class='String'>'s'</tspan></text>
+    <text dy='0.32em' x='0' y='122.4'><tspan class='Number'>1</tspan></text>
+    <text dy='0.32em' x='48' y='122.4'><tspan class='Number'>0</tspan></text>
+    <text dy='0.32em' x='96' y='122.4'><tspan class='Number'>0</tspan></text>
+    <text dy='0.32em' x='144' y='122.4'><tspan class='Number'>2</tspan></text>
+    <text dy='0.32em' x='192' y='122.4'><tspan class='Number'>8</tspan></text>
+    <text dy='0.32em' x='240' y='122.4'><tspan class='Number'>0</tspan></text>
+    <text dy='0.32em' x='0' y='158.4'><tspan class='Number'>1</tspan></text>
+    <text dy='0.32em' x='48' y='158.4'><tspan class='Number'>0</tspan></text>
+    <text dy='0.32em' x='96' y='158.4'><tspan class='Number'>7</tspan></text>
+    <text dy='0.32em' x='144' y='158.4'><tspan class='Number'>2</tspan></text>
+    <text dy='0.32em' x='192' y='158.4'><tspan class='Number'>8</tspan></text>
+    <text dy='0.32em' x='240' y='158.4'><tspan class='Number'>8</tspan></text>
+    <text dy='0.32em' x='0' y='194.4'><tspan class='Number'>1</tspan></text>
+    <text dy='0.32em' x='48' y='194.4'><tspan class='Number'>1</tspan></text>
+    <text dy='0.32em' x='96' y='194.4'><tspan class='Number'>1</tspan></text>
+    <text dy='0.32em' x='144' y='194.4'><tspan class='Number'>1</tspan></text>
+    <text dy='0.32em' x='192' y='194.4'><tspan class='Number'>0</tspan></text>
+    <text dy='0.32em' x='240' y='194.4'><tspan class='Number'>1</tspan></text>
+    <g text-anchor='end'>
+      <text dy='0.32em' x='-33.6' y='0'><tspan class='Value'>in</tspan></text>
+      <text dy='0.32em' x='-33.6' y='72'><tspan class='Value'>for</tspan></text>
+      <text dy='0.32em' x='-33.6' y='122.4'><tspan class='Function'>⊐</tspan></text>
+      <text dy='0.32em' x='-33.6' y='158.4'><tspan class='Function'>⊒</tspan></text>
+      <text dy='0.32em' x='-33.6' y='194.4'><tspan class='Function'>∊</tspan></text>
+    </g>
+  </g>
+</svg>
+
+<p>The three search functions are Index of (<code><span class='Function'>⊐</span></code>), Progressive Index of (<code><span class='Function'>⊒</span></code>), and Member of (<code><span class='Function'>∊</span></code>). These are dyadic functions that search one argument (&quot;searched-in&quot;) for major cells <a href="match.html">matching</a> cells from the other (&quot;searched-for&quot;). For example, Index of returns, for each <a href="array.html#cells">cell</a> in <code><span class='Value'>𝕩</span></code>, the index of the first cell in <code><span class='Value'>𝕨</span></code> that matches it.</p>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th>Name</th>
+<th align="center">for</th>
+<th align="center">in</th>
+<th>Return</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code><span class='Function'>⊐</span></code></td>
+<td>Index of</td>
+<td align="center"><code><span class='Value'>𝕩</span></code></td>
+<td align="center"><code><span class='Value'>𝕨</span></code></td>
+<td>Index of first match</td>
+</tr>
+<tr>
+<td align="center"><code><span class='Function'>⊒</span></code></td>
+<td>Progressive Index of</td>
+<td align="center"><code><span class='Value'>𝕩</span></code></td>
+<td align="center"><code><span class='Value'>𝕨</span></code></td>
+<td>Index of first unused match</td>
+</tr>
+<tr>
+<td align="center"><code><span class='Function'>∊</span></code></td>
+<td>Member of</td>
+<td align="center"><code><span class='Value'>𝕨</span></code></td>
+<td align="center"><code><span class='Value'>𝕩</span></code></td>
+<td><code><span class='Number'>1</span></code> if found, <code><span class='Number'>0</span></code> if not</td>
+</tr>
+<tr>
+<td align="center"><code><span class='Function'>⍋⍒</span></code></td>
+<td><a href="order.html#bins">Bins</a></td>
+<td align="center"><code><span class='Value'>𝕩</span></code></td>
+<td align="center"><code><span class='Value'>𝕨</span></code></td>
+<td>Predecessor index</td>
+</tr>
+</tbody>
+</table>
+<p>The searched-for argument is <code><span class='Value'>𝕩</span></code> in Index-of functions (<code><span class='Function'>⊐⊒</span></code>) and <code><span class='Value'>𝕨</span></code> in Member of (<code><span class='Function'>∊</span></code>). <a href="order.html#bins">Bins</a> Up and Down (<code><span class='Function'>⍋⍒</span></code>) are ordering functions but follow the same pattern as Index-of. It's split into cells, but not necessarily <em>major</em> cells: instead, the cells used match the rank of a major cell of the other (searched-in) argument. In the most common case, when the searched-in argument is a list, 0-cells are used for the search (we might also say elements, as it gives the same result).</p>
+<p>The result is always an array containing one number for each searched-for cell. For Index of and Member of, every result is computed independently; for Progressive Index of the result for a cell can depend on earlier cells, in index order.</p>
+<h2 id="member-of"><a class="header" href="#member-of">Member of</a></h2>
+<p>The simplest of the search functions, Member of (<code><span class='Function'>∊</span></code>) returns <code><span class='Number'>1</span></code> if an entry in <code><span class='Value'>𝕨</span></code> matches some entry in <code><span class='Value'>𝕩</span></code>, and <code><span class='Number'>0</span></code> if it doesn't.</p>
+<a class="replLink" title="Open in the REPL" target="_blank" href="https://mlochbaum.github.io/BQN/try.html#code=ImdyZWVuIuKAvyJicmlja3Mi4oC/ImNvdyLigL8iYmx1ZSIg4oiKICJyZWQi4oC/ImdyZWVuIuKAvyJibHVlIg==">↗️</a><pre>    <span class='String'>&quot;green&quot;</span><span class='Ligature'>‿</span><span class='String'>&quot;bricks&quot;</span><span class='Ligature'>‿</span><span class='String'>&quot;cow&quot;</span><span class='Ligature'>‿</span><span class='String'>&quot;blue&quot;</span> <span class='Function'>∊</span> <span class='String'>&quot;red&quot;</span><span class='Ligature'>‿</span><span class='String'>&quot;green&quot;</span><span class='Ligature'>‿</span><span class='String'>&quot;blue&quot;</span>
+⟨ 1 0 0 1 ⟩
+</pre>
+<p>The result is independent of the ordering of <code><span class='Value'>𝕩</span></code>: all that matters is which cells it contains.</p>
+<p>Member of can be used in a <a href="train.html">train</a> to compute the set intersection and difference of two arrays. For example, <code><span class='Function'>∊/⊣</span></code> uses <code><span class='Value'>𝕨</span><span class='Function'>∊</span><span class='Value'>𝕩</span></code> to <a href="replicate.html">filter</a> <code><span class='Value'>𝕨</span></code> (from <code><span class='Value'>𝕨</span><span class='Function'>⊣</span><span class='Value'>𝕩</span></code>), giving an intersection.</p>
+<a class="replLink" title="Open in the REPL" target="_blank" href="https://mlochbaum.github.io/BQN/try.html#code=ImluaXRpYWwgc2V0IiAo4oiKL+KKoykgImludGVyc2VjdCIgICAgICMgS2VlcCDwnZWpCgoiaW5pdGlhbCBzZXQiICjCrOKImOKIii/iiqMpICJkaWZmZXJlbmNlIiAgIyBSZW1vdmUg8J2VqQ==">↗️</a><pre>    <span class='String'>&quot;initial set&quot;</span> <span class='Paren'>(</span><span class='Function'>∊/⊣</span><span class='Paren'>)</span> <span class='String'>&quot;intersect&quot;</span>     <span class='Comment'># Keep 𝕩
+</span>"initiset"
+
+    <span class='String'>&quot;initial set&quot;</span> <span class='Paren'>(</span><span class='Function'>¬</span><span class='Modifier2'>∘</span><span class='Function'>∊/⊣</span><span class='Paren'>)</span> <span class='String'>&quot;difference&quot;</span>  <span class='Comment'># Remove 𝕩
+</span>"tal st"
+</pre>
+<p>These functions appear in APL as Intersect (<code><span class='Value'>∩</span></code>) and Without (<code><span class='Value'>~</span></code>). Really, only <code><span class='Value'>𝕩</span></code> is treated like a set, while the ordering and multiplicity of elements of <code><span class='Value'>𝕨</span></code> are maintained. I think the explicit implementations show this well, since <code><span class='Value'>𝕩</span></code> is only used as the right argument to <code><span class='Function'>∊</span></code>, and prefer this clarity to the brevity of a single symbol.</p>
+<h2 id="index-of"><a class="header" href="#index-of">Index of</a></h2>
+<p>Index of (<code><span class='Function'>⊐</span></code>) returns the index of the first occurrence of each entry in <code><span class='Value'>𝕨</span></code>, or <code><span class='Function'>≠</span><span class='Value'>𝕨</span></code> if an entry doesn't appear in <code><span class='Value'>𝕨</span></code> at all.</p>
+<a class="replLink" title="Open in the REPL" target="_blank" href="https://mlochbaum.github.io/BQN/try.html#code=Inplcm8i4oC/Im9uZSLigL8idHdvIuKAvyJ0aHJlZSIg4oqQICJvbmUi4oC/ImVpZ2h0IuKAvyJ0d28i">↗️</a><pre>    <span class='String'>&quot;zero&quot;</span><span class='Ligature'>‿</span><span class='String'>&quot;one&quot;</span><span class='Ligature'>‿</span><span class='String'>&quot;two&quot;</span><span class='Ligature'>‿</span><span class='String'>&quot;three&quot;</span> <span class='Function'>⊐</span> <span class='String'>&quot;one&quot;</span><span class='Ligature'>‿</span><span class='String'>&quot;eight&quot;</span><span class='Ligature'>‿</span><span class='String'>&quot;two&quot;</span>
+⟨ 1 4 2 ⟩
+</pre>
+<p><code><span class='Value'>𝕩</span><span class='Function'>∊</span><span class='Value'>𝕨</span></code> is the same as <code><span class='Paren'>(</span><span class='Value'>𝕨</span><span class='Function'>⊐</span><span class='Value'>𝕩</span><span class='Paren'>)</span><span class='Function'>&lt;≠</span><span class='Value'>𝕨</span></code>. Note the reversal of arguments! In both <code><span class='Function'>∊</span></code> and <code><span class='Function'>⊐</span></code>, the open side points to the searched-in argument and the closed side points to the searched-for argument. Relatedly, in Select (<code><span class='Function'>⊏</span></code>), the open side points to the selected argument, which is more like the searched-in argument in that its cells are generally accessed out of order (the searched-for argument is most like the selection result <code><span class='Value'>𝕨</span><span class='Function'>⊏</span><span class='Value'>𝕩</span></code>).</p>
+<p>Index of always returns exactly one number, even if there are multiple matches, or no matches at all. To find the indices of all matches, start with <a href="match.html">Match</a> <a href="map.html">Each</a>, then apply <a href="replicate.html#indices">Indices</a> (I didn't mean for it to sound so repetitive! It just happened!).</p>
+<a class="replLink" title="Open in the REPL" target="_blank" href="https://mlochbaum.github.io/BQN/try.html#code=LyAibGV0dGVycyIg4omhwqg8ICdlJyAgICAgICAgIyBNYW55IHRvIG9uZQoKImxldHRlcnMiICg84oiYL8uY4omh4oycy5wpICJsZXQiICAjIE1hbnkgdG8gbWFueQ==">↗️</a><pre>    <span class='Function'>/</span> <span class='String'>&quot;letters&quot;</span> <span class='Function'>≡</span><span class='Modifier'>¨</span><span class='Function'>&lt;</span> <span class='String'>'e'</span>        <span class='Comment'># Many to one
+</span>⟨ 1 4 ⟩
+
+    <span class='String'>&quot;letters&quot;</span> <span class='Paren'>(</span><span class='Function'>&lt;</span><span class='Modifier2'>∘</span><span class='Function'>/</span><span class='Modifier'>˘</span><span class='Function'>≡</span><span class='Modifier'>⌜˜</span><span class='Paren'>)</span> <span class='String'>&quot;let&quot;</span>  <span class='Comment'># Many to many
+</span>⟨ ⟨ 0 ⟩ ⟨ 1 4 ⟩ ⟨ 2 3 ⟩ ⟩
+</pre>
+<h2 id="progressive-index-of"><a class="header" href="#progressive-index-of">Progressive Index of</a></h2>
+<p>Progressive Index of (<code><span class='Function'>⊒</span></code>), as the name and glyph suggest, is a more sophisticated variant of Index of. Like Index of, it returns either <code><span class='Function'>≠</span><span class='Value'>𝕨</span></code> or an index of a cell from <code><span class='Value'>𝕨</span></code> that matches the given cell of <code><span class='Value'>𝕩</span></code>. Unlike Index of, no index can ever be repeated (but <code><span class='Function'>≠</span><span class='Value'>𝕨</span></code> can). Progressive Index of returns the index of the first <em>unused</em> match, provided there's still one left.</p>
+<a class="replLink" title="Open in the REPL" target="_blank" href="https://mlochbaum.github.io/BQN/try.html#code=ImFhYSIg4oqSICJhYWFhYSIKCiJhYWFiYiIg4oqSICJhYmFiYWJhYmFiIg==">↗️</a><pre>    <span class='String'>&quot;aaa&quot;</span> <span class='Function'>⊒</span> <span class='String'>&quot;aaaaa&quot;</span>
+⟨ 0 1 2 3 3 ⟩
+
+    <span class='String'>&quot;aaabb&quot;</span> <span class='Function'>⊒</span> <span class='String'>&quot;ababababab&quot;</span>
+⟨ 0 3 1 4 2 5 5 5 5 5 ⟩
+</pre>
+<p>Above we said that <code><span class='Value'>𝕩</span><span class='Function'>∊</span><span class='Value'>𝕨</span></code> is <code><span class='Paren'>(</span><span class='Value'>𝕨</span><span class='Function'>⊐</span><span class='Value'>𝕩</span><span class='Paren'>)</span><span class='Function'>&lt;≠</span><span class='Value'>𝕨</span></code>, so that <code><span class='Function'>⊐</span><span class='Modifier'>˜</span><span class='Function'>&lt;≠</span><span class='Modifier2'>∘</span><span class='Function'>⊢</span></code> is an implementation of Member of. The corresponding <code><span class='Function'>⊒</span><span class='Modifier'>˜</span><span class='Function'>&lt;≠</span><span class='Modifier2'>∘</span><span class='Function'>⊢</span></code> implements <em>progressive</em> member of, that is, membership on <a href="https://en.wikipedia.org/wiki/Multiset">multisets</a>. So if <code><span class='Value'>𝕩</span></code> contains two copies of <code><span class='String'>'a'</span></code>, only the first two instances of <code><span class='String'>'a'</span></code> in <code><span class='Value'>𝕨</span></code> are considered to belong to it. And like membership is useful for set intersection and difference, progressive membership gives multiset versions of these.</p>
+<a class="replLink" title="Open in the REPL" target="_blank" href="https://mlochbaum.github.io/BQN/try.html#code=ImFhYmJjYyIgKOKKkMucPOKJoOKImOKKoikgImJhYSIKCiJhYWJiY2MiICjiipLLnDziiaDiiJjiiqIpICJiYWEiCgoiYWFiYmNjIiAoKOKKksucPeKJoOKImOKKoikv4oqjKSAiYmFhIiAgIyBNdWx0aXNldCBkaWZmZXJlbmNl">↗️</a><pre>    <span class='String'>&quot;aabbcc&quot;</span> <span class='Paren'>(</span><span class='Function'>⊐</span><span class='Modifier'>˜</span><span class='Function'>&lt;≠</span><span class='Modifier2'>∘</span><span class='Function'>⊢</span><span class='Paren'>)</span> <span class='String'>&quot;baa&quot;</span>
+⟨ 1 1 1 1 0 0 ⟩
+
+    <span class='String'>&quot;aabbcc&quot;</span> <span class='Paren'>(</span><span class='Function'>⊒</span><span class='Modifier'>˜</span><span class='Function'>&lt;≠</span><span class='Modifier2'>∘</span><span class='Function'>⊢</span><span class='Paren'>)</span> <span class='String'>&quot;baa&quot;</span>
+⟨ 1 1 1 0 0 0 ⟩
+
+    <span class='String'>&quot;aabbcc&quot;</span> <span class='Paren'>((</span><span class='Function'>⊒</span><span class='Modifier'>˜</span><span class='Function'>=≠</span><span class='Modifier2'>∘</span><span class='Function'>⊢</span><span class='Paren'>)</span><span class='Function'>/⊣</span><span class='Paren'>)</span> <span class='String'>&quot;baa&quot;</span>  <span class='Comment'># Multiset difference
+</span>"bcc"
+</pre>
+<p>This primitive gives an interesting way to implement the <a href="order.html#ordinals">ordinals</a> pattern that might be easier to understand than the classic <code><span class='Function'>⍋⍋</span></code> (it's probably a little slower though). The idea is to use the sorted array as the left argument to <code><span class='Function'>⊒</span></code>. Now the index returned for each cell is just where it ended up in that sorted order. If we used ordinary Index of then equal cells would share the smallest index; Progressive Index of means ties are broken in favor of earlier cells.</p>
+<a class="replLink" title="Open in the REPL" target="_blank" href="https://mlochbaum.github.io/BQN/try.html#code=4o2L4oiY4o2LICJhZGViY2VkYmEiCgriiKfiirjiipIgImFkZWJjZWRiYSIKCuKIp+KKuOKKkCAiYWRlYmNlZGJhIiAgIyBUaWVzIGluY2x1ZGVk">↗️</a><pre>    <span class='Function'>⍋</span><span class='Modifier2'>∘</span><span class='Function'>⍋</span> <span class='String'>&quot;adebcedba&quot;</span>
+⟨ 0 5 7 2 4 8 6 3 1 ⟩
+
+    <span class='Function'>∧</span><span class='Modifier2'>⊸</span><span class='Function'>⊒</span> <span class='String'>&quot;adebcedba&quot;</span>
+⟨ 0 5 7 2 4 8 6 3 1 ⟩
+
+    <span class='Function'>∧</span><span class='Modifier2'>⊸</span><span class='Function'>⊐</span> <span class='String'>&quot;adebcedba&quot;</span>  <span class='Comment'># Ties included
+</span>⟨ 0 5 7 2 4 7 5 2 0 ⟩
+</pre>
+<p>Here's a goofy code golf tip: if the two arguments to Progressive Index of are the same, then every cell will be matched to itself, because all the previous indices are taken but the current one does match. So <code><span class='Function'>⊒</span><span class='Modifier'>˜</span></code> is the same as <code><span class='Function'>↕</span><span class='Modifier2'>∘</span><span class='Function'>≠</span></code>.</p>
+<a class="replLink" title="Open in the REPL" target="_blank" href="https://mlochbaum.github.io/BQN/try.html#code=4oqSy5wgImFueXRoaW5nIGF0IGFsbCI=">↗️</a><pre>    <span class='Function'>⊒</span><span class='Modifier'>˜</span> <span class='String'>&quot;anything at all&quot;</span>
+⟨ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 ⟩
+</pre>
+<h2 id="single-search"><a class="header" href="#single-search">Single search</a></h2>
+<p>Search functions are designed to search for multiple elements at once, and return an array of results. This is the array-oriented way to do it, and can allow faster algorithms to be used for the computation.</p>
+<a class="replLink" title="Open in the REPL" target="_blank" href="https://mlochbaum.github.io/BQN/try.html#code=c3R1ZmYg4oaQICJ0YWNrcyLigL8icGFwZXIi4oC/InN0cmluZyLigL8idGFwZSIKCnN0dWZmIOKKkCAidGFja3Mi4oC/InN0cmluZyI=">↗️</a><pre>    <span class='Value'>stuff</span> <span class='Gets'>←</span> <span class='String'>&quot;tacks&quot;</span><span class='Ligature'>‿</span><span class='String'>&quot;paper&quot;</span><span class='Ligature'>‿</span><span class='String'>&quot;string&quot;</span><span class='Ligature'>‿</span><span class='String'>&quot;tape&quot;</span>
+
+    <span class='Value'>stuff</span> <span class='Function'>⊐</span> <span class='String'>&quot;tacks&quot;</span><span class='Ligature'>‿</span><span class='String'>&quot;string&quot;</span>
+⟨ 0 2 ⟩
+</pre>
+<p>The first thing you might try to search for just one element does not go so well (and yes, this <a href="../commentary/problems.html#search-function-depth">is a bad thing</a>).</p>
+<a class="replLink" title="Open in the REPL" target="_blank" href="https://mlochbaum.github.io/BQN/try.html#code=c3R1ZmYg4oaQICJ0YWNrcyLigL8icGFwZXIi4oC/InN0cmluZyLigL8idGFwZSIKc3R1ZmYg4oqQICJzdHJpbmci">↗️</a><pre>    <span class='Value'>stuff</span> <span class='Function'>⊐</span> <span class='String'>&quot;string&quot;</span>
+⟨ 4 4 4 4 4 4 ⟩
+</pre>
+<p>Instead of interpreting <code><span class='Value'>𝕩</span></code> as a single element, Index of treats it as a list, and <code><span class='Value'>𝕨</span></code> doesn't even contain characters! Well, <a href="enclose.html">Enclose</a> (<code><span class='Function'>&lt;</span></code>) makes an array from a single element…</p>
+<a class="replLink" title="Open in the REPL" target="_blank" href="https://mlochbaum.github.io/BQN/try.html#code=c3R1ZmYg4oaQICJ0YWNrcyLigL8icGFwZXIi4oC/InN0cmluZyLigL8idGFwZSIKc3R1ZmYg4oqQPCAic3RyaW5nIg==">↗️</a><pre>    <span class='Value'>stuff</span> <span class='Function'>⊐&lt;</span> <span class='String'>&quot;string&quot;</span>
+┌·   
+· 2  
+    ┘
+</pre>
+<p>This result has the right information, but is enclosed and could break the program later on. Remember that the result of a search function is <em>always</em> an array. We really want the <a href="pick.html#first">first</a> element.</p>
+<a class="replLink" title="Open in the REPL" target="_blank" href="https://mlochbaum.github.io/BQN/try.html#code=c3R1ZmYg4oaQICJ0YWNrcyLigL8icGFwZXIi4oC/InN0cmluZyLigL8idGFwZSIKc3R1ZmYg4oqR4oiY4oqQ4p+cPCAic3RyaW5nIg==">↗️</a><pre>    <span class='Value'>stuff</span> <span class='Function'>⊑</span><span class='Modifier2'>∘</span><span class='Function'>⊐</span><span class='Modifier2'>⟜</span><span class='Function'>&lt;</span> <span class='String'>&quot;string&quot;</span>
+2
+</pre>
+<p>If <code><span class='Value'>𝕨</span></code> is fixed, then the version I prefer is to use <a href="under.html">Under</a> to enclose the argument and then un-enclose the result. It requires <code><span class='Value'>𝕨</span></code> to be bound to <code><span class='Function'>⊐</span></code> because otherwise Under would enclose <code><span class='Value'>𝕨</span></code> as well, since it applies <code><span class='Function'>𝔾</span></code> to both arguments.</p>
+<a class="replLink" title="Open in the REPL" target="_blank" href="https://mlochbaum.github.io/BQN/try.html#code=c3R1ZmYg4oaQICJ0YWNrcyLigL8icGFwZXIi4oC/InN0cmluZyLigL8idGFwZSIKc3R1ZmbiirjiipDijL48ICJzdHJpbmci">↗️</a><pre>    <span class='Value'>stuff</span><span class='Modifier2'>⊸</span><span class='Function'>⊐</span><span class='Modifier2'>⌾</span><span class='Function'>&lt;</span> <span class='String'>&quot;string&quot;</span>
+2
+</pre>
+<p>For Member of, the equivalent is <code><span class='Function'>∊</span><span class='Modifier2'>⟜</span><span class='Value'>stuff</span><span class='Modifier2'>⌾</span><span class='Function'>&lt;</span></code>.</p>
+<h2 id="higher-ranks"><a class="header" href="#higher-ranks">Higher ranks</a></h2>
+<p>So far we've shown search functions acting on lists. Well, and one example with a unit array slipped into the last section. In fact, if the searched-in array is a list, then the searched-for argument can have any rank.</p>
+<a class="replLink" title="Open in the REPL" target="_blank" href="https://mlochbaum.github.io/BQN/try.html#code=WyJoaWdoIiwicmFuayJdIOKIiiAibGlzdCBhcmci">↗️</a><pre>    <span class='Bracket'>[</span><span class='String'>&quot;high&quot;</span><span class='Separator'>,</span><span class='String'>&quot;rank&quot;</span><span class='Bracket'>]</span> <span class='Function'>∊</span> <span class='String'>&quot;list arg&quot;</span>
+┌─         
+╵ 0 1 1 0  
+  1 1 0 0  
+          ┘
+</pre>
+<p>Member of and Index of compute each result number independently, so only the shape is different. Progressive Index of depends on the way entries in <code><span class='Value'>𝕩</span></code> are ordered: it searches them in index order, so that (using <a href="reshape.html">Deshape</a>) <code><span class='Function'>⥊</span><span class='Value'>𝕨</span><span class='Function'>⊒</span><span class='Value'>𝕩</span></code> is <code><span class='Value'>𝕨</span><span class='Function'>⊒⥊</span><span class='Value'>𝕩</span></code>.</p>
+<a class="replLink" title="Open in the REPL" target="_blank" href="https://mlochbaum.github.io/BQN/try.html#code=NOKAvzTigL80IOKKkiAz4oC/MuKlijQ=">↗️</a><pre>    <span class='Number'>4</span><span class='Ligature'>‿</span><span class='Number'>4</span><span class='Ligature'>‿</span><span class='Number'>4</span> <span class='Function'>⊒</span> <span class='Number'>3</span><span class='Ligature'>‿</span><span class='Number'>2</span><span class='Function'>⥊</span><span class='Number'>4</span>
+┌─     
+╵ 0 1  
+  2 3  
+  3 3  
+      ┘
+</pre>
+<p>But the searched-in argument doesn't have to be a list either! It can also be an array of higher rank. Rank 0 isn't allowed: if you want to &quot;search&quot; a unit, you're probably just looking for <a href="match.html">match</a>.</p>
+<p>The searched-in argument is treated as a list of its <a href="array.html#cells">major cells</a>. It's the rank of these major cells—let's call this rank <code><span class='Value'>c</span></code>—that determines how the searched-for argument is treated. That argument must have rank <code><span class='Value'>c</span></code> or more, and it's treated as an array of <code><span class='Value'>c</span></code>-cells. For example, if the left argument to <code><span class='Function'>⊐</span></code> is a rank-2 table, then each 1-cell (row) of <code><span class='Value'>𝕩</span></code> is searched for independently, yielding one number in the result: a 0-cell.</p>
+<a class="replLink" title="Open in the REPL" target="_blank" href="https://mlochbaum.github.io/BQN/try.html#code=4oqiIHJvd3Mg4oaQIFsicm93IiwicmhvIiwicm93IiwicnVlIl0KCnJvd3Mg4oqQIFtbInJvdyIsInJvdyIsImNvbCJdLFsicmhvIiwiY293IiwiY29sIl1d">↗️</a><pre>    <span class='Function'>⊢</span> <span class='Value'>rows</span> <span class='Gets'>←</span> <span class='Bracket'>[</span><span class='String'>&quot;row&quot;</span><span class='Separator'>,</span><span class='String'>&quot;rho&quot;</span><span class='Separator'>,</span><span class='String'>&quot;row&quot;</span><span class='Separator'>,</span><span class='String'>&quot;rue&quot;</span><span class='Bracket'>]</span>
+┌─     
+╵"row  
+  rho  
+  row  
+  rue" 
+      ┘
+
+    <span class='Value'>rows</span> <span class='Function'>⊐</span> <span class='Bracket'>[[</span><span class='String'>&quot;row&quot;</span><span class='Separator'>,</span><span class='String'>&quot;row&quot;</span><span class='Separator'>,</span><span class='String'>&quot;col&quot;</span><span class='Bracket'>]</span><span class='Separator'>,</span><span class='Bracket'>[</span><span class='String'>&quot;rho&quot;</span><span class='Separator'>,</span><span class='String'>&quot;cow&quot;</span><span class='Separator'>,</span><span class='String'>&quot;col&quot;</span><span class='Bracket'>]]</span>
+┌─       
+╵ 0 0 4  
+  1 4 4  
+        ┘
+</pre>
+<p>So the result rank of <code><span class='Function'>⊐</span></code> is always <code><span class='Value'>𝕨</span><span class='Function'>¬</span><span class='Modifier2'>○</span><span class='Function'>=</span><span class='Value'>𝕩</span></code>, with a result shape <code><span class='Paren'>(</span><span class='Number'>1</span><span class='Function'>-</span><span class='Modifier'>˜</span><span class='Function'>=</span><span class='Value'>𝕨</span><span class='Paren'>)</span><span class='Function'>↓≢</span><span class='Value'>𝕩</span></code>, and <code><span class='Value'>𝕨</span><span class='Function'>⊐</span><span class='Value'>𝕩</span></code> fails if <code><span class='Number'>1</span><span class='Function'>&gt;=</span><span class='Value'>𝕩</span></code> or the result rank would be negative. In the list case, we have <code><span class='Number'>1</span><span class='Function'>==</span><span class='Value'>𝕩</span></code> (so the first condition holds), and the result rank resolves to <code><span class='Function'>=</span><span class='Value'>𝕨</span></code> (which can't be negative, so the second holds as well). The cell rank of <code><span class='Value'>𝕩</span></code> is 0, and the fact that a 0-cell of <code><span class='Value'>𝕩</span></code> gives a 0-cell of the result is what causes the shape arithmetic to be so simple.</p>
+<p>For Member of, the arguments are reversed relative to Index of, but otherwise everything's the same. This differs from APL, where entries are always elements, not cells. Many APL designers consider the APL definition to be a failure of foresight and would prefer BQN's definition—or rather A+'s or J's definition, as these languages were actually the first to use it. The rank-aware version is more flexible, as it allows both searching for elements and searching for rows. APL would return the first result in both cases below.</p>
+<a class="replLink" title="Open in the REPL" target="_blank" href="https://mlochbaum.github.io/BQN/try.html#code=WzLigL8xLDPigL8xXSDiiIogM+KAvzHigL804oC/MwoKWzLigL8xLDPigL8xXSDiiIogM+KAvzHiiY004oC/Mw==">↗️</a><pre>    <span class='Bracket'>[</span><span class='Number'>2</span><span class='Ligature'>‿</span><span class='Number'>1</span><span class='Separator'>,</span><span class='Number'>3</span><span class='Ligature'>‿</span><span class='Number'>1</span><span class='Bracket'>]</span> <span class='Function'>∊</span> <span class='Number'>3</span><span class='Ligature'>‿</span><span class='Number'>1</span><span class='Ligature'>‿</span><span class='Number'>4</span><span class='Ligature'>‿</span><span class='Number'>3</span>
+┌─     
+╵ 0 1  
+  1 1  
+      ┘
+
+    <span class='Bracket'>[</span><span class='Number'>2</span><span class='Ligature'>‿</span><span class='Number'>1</span><span class='Separator'>,</span><span class='Number'>3</span><span class='Ligature'>‿</span><span class='Number'>1</span><span class='Bracket'>]</span> <span class='Function'>∊</span> <span class='Number'>3</span><span class='Ligature'>‿</span><span class='Number'>1</span><span class='Function'>≍</span><span class='Number'>4</span><span class='Ligature'>‿</span><span class='Number'>3</span>
+⟨ 0 1 ⟩
+</pre>

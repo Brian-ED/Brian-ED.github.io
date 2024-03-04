@@ -1,0 +1,724 @@
+<head>
+  <link href="../favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+  <link href="../style.css" rel="stylesheet"/>
+  <title>BQN–J dictionary</title>
+</head>
+<div class="nav">(<a href="https://github.com/mlochbaum/BQN">github</a>) / <a href="../index.html">BQN</a> / <a href="index.html">doc</a></div>
+<h1 id="bqnj-dictionary"><a class="header" href="#bqnj-dictionary">BQN–J dictionary</a></h1>
+<style>.Comment { color: inherit; }</style>
+<p>A guide to help users of J get up to speed with BQN quickly. For a higher-level comparison, check <a href="../commentary/why.html#versus-apl-and-j">Why BQN?</a>.</p>
+<h2 id="terminology"><a class="header" href="#terminology">Terminology</a></h2>
+<h3 id="array-model"><a class="header" href="#array-model">Array model</a></h3>
+<p>BQN uses the <a href="based.html">based array model</a>, which is fundamentally different from J's flat array model. BQN uses non-array values such as characters and numbers, called &quot;atoms&quot;, while in J every noun is an array. A BQN array can contain any values in any mixture, while a J array must be uniformly numbers, characters, or boxes (BQN doesn't use boxes).</p>
+<p>The J terms &quot;atom&quot; and &quot;element&quot; are used to mean different things by different authors. In BQN, a rank-0 array or atom is called a &quot;unit&quot;, and the values contained in an array—which may or may not be arrays—are called &quot;elements&quot;. Each element is contained in a 0-cell, or rank-0 subarray. BQN uses the term &quot;major cell&quot; for what J calls an &quot;item&quot; of an array: a cell with rank one less than that array. BQN shares the terms &quot;list&quot; and &quot;table&quot; for rank-1 and rank-2 arrays with J.</p>
+<p>BQN uses &quot;<a href="depth.html">depth</a>&quot; rather than &quot;boxing level&quot;. BQN gives atoms depth 0, so that the depth of a BQN array is one higher than the boxing level of the corresponding J array.</p>
+<h3 id="roles"><a class="header" href="#roles">Roles</a></h3>
+<p>In J, the part of speech is an inherent property of a value, while in BQN it's determined by how the value is used in a particular expression, and can be different from the value's type. See <a href="context.html">context-free grammar</a>.</p>
+<table>
+<thead>
+<tr>
+<th>J part of speech</th>
+<th>BQN role</th>
+<th>Spelling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Noun</td>
+<td>Subject</td>
+<td><code><span class='Value'>lowerCase</span></code></td>
+</tr>
+<tr>
+<td>Verb</td>
+<td>Function</td>
+<td><code><span class='Function'>UpperCase</span></code></td>
+</tr>
+<tr>
+<td>Adverb</td>
+<td>1-modifier</td>
+<td><code><span class='Modifier'>_leading</span></code></td>
+</tr>
+<tr>
+<td>Conjunction</td>
+<td>2-modifier</td>
+<td><code><span class='Modifier2'>_both_</span></code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="syntax"><a class="header" href="#syntax">Syntax</a></h2>
+<table>
+<thead>
+<tr>
+<th>J</th>
+<th>BQN</th>
+<th>Remarks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Function'>NB</span><span class='Value'>.</span></code></td>
+<td><code><span class='Comment'>#</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code><span class='String'>'</span></code></td>
+<td><code><span class='String'>&quot;</span></code></td>
+<td><code><span class='String'>'</span></code> for character atoms</td>
+</tr>
+<tr>
+<td><code><span class='Function'>=</span><span class='Value'>.</span></code> and <code><span class='Function'>=</span><span class='Head'>:</span></code></td>
+<td><code><span class='Gets'>←</span></code> and <code><span class='Gets'>↩</span></code></td>
+<td><code><span class='Gets'>←</span></code> to define; <code><span class='Gets'>↩</span></code> to modify</td>
+</tr>
+<tr>
+<td><code><span class='Number'>3</span> <span class='Head'>:</span><span class='Value'>…</span></code> or <code><span class='Brace'>{{</span><span class='Value'>…</span><span class='Brace'>}}</span></code></td>
+<td><code><span class='Brace'>{</span><span class='Value'>…</span><span class='Brace'>}</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code><span class='Head'>:</span></code></td>
+<td><code><span class='Head'>;</span></code></td>
+<td>To separate function cases</td>
+</tr>
+<tr>
+<td><code><span class='Value'>x</span></code> <code><span class='Value'>y</span></code></td>
+<td><code><span class='Value'>𝕨</span></code> <code><span class='Value'>𝕩</span></code></td>
+<td><code><span class='Function'>𝕊</span></code> for block function self-reference</td>
+</tr>
+<tr>
+<td><code><span class='Value'>u</span></code> <code><span class='Value'>v</span></code></td>
+<td><code><span class='Function'>𝔽</span></code> <code><span class='Function'>𝔾</span></code></td>
+<td><code><span class='Value'>𝕣</span></code> for block modifier self-reference</td>
+</tr>
+<tr>
+<td><code><span class='Modifier2'>_</span></code></td>
+<td><code><span class='Number'>¯</span></code> or <code><span class='Number'>∞</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code><span class='Number'>2</span> <span class='Number'>3</span> <span class='Number'>4</span></code></td>
+<td><code><span class='Number'>2</span><span class='Ligature'>‿</span><span class='Number'>3</span><span class='Ligature'>‿</span><span class='Number'>4</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code><span class='Bracket'>[</span><span class='Head'>:</span></code></td>
+<td><code><span class='Nothing'>·</span></code></td>
+<td>Cap</td>
+</tr>
+<tr>
+<td><code><span class='Value'>assert.</span></code></td>
+<td><code><span class='Function'>!</span></code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>BQN's explicit functions and modifiers are called <a href="block.html">blocks</a>, and have a more sophisticated syntax than J. BQN uses <a href="lexical.html">lexical scope</a>, and has no global variables. BQN also has a <a href="arrayrepr.html#brackets">list notation</a> using <code><span class='Bracket'>⟨⟩</span></code>, and <code><span class='Bracket'>[]</span></code> for higher-rank arrays.</p>
+<h2 id="for-reading"><a class="header" href="#for-reading">For reading</a></h2>
+<p>J analogues of BQN primitive functions are given below. They are not always the same; usually this is because BQN has extra functionality relative to J, although in some cases it has less or different functionality.</p>
+<p>Functions <code><span class='Function'>+</span></code> <code><span class='Function'>-</span></code> <code><span class='Function'>|</span></code> <code><span class='Function'>&lt;</span></code> <code><span class='Function'>&gt;</span></code> are the same in both languages.</p>
+<table>
+<thead>
+<tr>
+<th align="center">BQN</th>
+<th align="center"><code><span class='Function'>×</span></code></th>
+<th align="center"><code><span class='Function'>÷</span></code></th>
+<th align="center"><code><span class='Function'>⋆</span></code></th>
+<th align="center"><code><span class='Function'>√</span></code></th>
+<th align="center"><code><span class='Function'>⌊</span></code></th>
+<th align="center"><code><span class='Function'>⌈</span></code></th>
+<th align="center"><code><span class='Function'>≤</span></code></th>
+<th align="center"><code><span class='Function'>≥</span></code></th>
+<th align="center"><code><span class='Function'>⊣</span></code></th>
+<th align="center"><code><span class='Function'>⊢</span></code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">J</td>
+<td align="center"><code><span class='Value'>*</span></code></td>
+<td align="center"><code><span class='Value'>%</span></code></td>
+<td align="center"><code><span class='Value'>^</span></code></td>
+<td align="center"><code><span class='Value'>%</span><span class='Head'>:</span></code></td>
+<td align="center"><code><span class='Function'>&lt;</span><span class='Value'>.</span></code></td>
+<td align="center"><code><span class='Function'>&gt;</span><span class='Value'>.</span></code></td>
+<td align="center"><code><span class='Function'>&lt;</span><span class='Head'>:</span></code></td>
+<td align="center"><code><span class='Function'>&gt;</span><span class='Head'>:</span></code></td>
+<td align="center"><code><span class='Bracket'>[</span></code></td>
+<td align="center"><code><span class='Bracket'>]</span></code></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th align="center">BQN</th>
+<th align="center"><code><span class='Function'>≍</span></code></th>
+<th align="center"><code><span class='Function'>⋈</span></code></th>
+<th align="center"><code><span class='Function'>⌽</span></code></th>
+<th align="center"><code><span class='Function'>⍉</span></code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">J</td>
+<td align="center"><code><span class='Separator'>,</span><span class='Head'>:</span></code></td>
+<td align="center"><code><span class='Separator'>,</span><span class='Value'>&amp;</span><span class='Head'>:</span><span class='Function'>&lt;</span></code></td>
+<td align="center"><code><span class='Function'>|</span><span class='Value'>.</span></code></td>
+<td align="center"><code><span class='Function'>|</span><span class='Head'>:</span></code></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th align="center">BQN</th>
+<th align="center"><code><span class='Function'>∧</span></code></th>
+<th align="center"><code><span class='Function'>∨</span></code></th>
+<th align="center"><code><span class='Function'>¬</span></code></th>
+<th align="center"><code><span class='Function'>=</span></code></th>
+<th align="center"><code><span class='Function'>≠</span></code></th>
+<th align="center"><code><span class='Function'>≡</span></code></th>
+<th align="center"><code><span class='Function'>≢</span></code></th>
+<th align="center"><code><span class='Function'>⥊</span></code></th>
+<th align="center"><code><span class='Function'>∾</span></code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">Monad</td>
+<td align="center"><code><span class='Function'>/</span><span class='Head'>:</span><span class='Value'>~</span></code></td>
+<td align="center"><code><span class='Value'>\</span><span class='Head'>:</span><span class='Value'>~</span></code></td>
+<td align="center"><code><span class='Function'>-</span><span class='Value'>.</span></code></td>
+<td align="center"><code><span class='Comment'>#@$</span></code></td>
+<td align="center"><code><span class='Comment'>#</span></code></td>
+<td align="center"><code><span class='Function'>L</span><span class='Value'>.</span></code></td>
+<td align="center"><code><span class='Value'>$</span></code></td>
+<td align="center"><code><span class='Separator'>,</span></code></td>
+<td align="center"><code><span class='Head'>;</span></code></td>
+</tr>
+<tr>
+<td align="center">Dyad</td>
+<td align="center"><code><span class='Value'>*.</span></code></td>
+<td align="center"><code><span class='Function'>+</span><span class='Value'>.</span></code></td>
+<td align="center"><code><span class='Function'>+-</span><span class='Value'>.</span></code></td>
+<td align="center"><code><span class='Function'>=</span></code></td>
+<td align="center"><code><span class='Value'>~</span><span class='Head'>:</span></code></td>
+<td align="center"><code><span class='Function'>-</span><span class='Head'>:</span></code></td>
+<td align="center"><code><span class='Function'>-</span><span class='Value'>.</span><span class='String'>@</span><span class='Function'>-</span><span class='Head'>:</span></code></td>
+<td align="center"><code><span class='Value'>$</span></code></td>
+<td align="center"><code><span class='Separator'>,</span></code></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th align="center">BQN</th>
+<th align="center"><code><span class='Function'>↑</span></code></th>
+<th align="center"><code><span class='Function'>↓</span></code></th>
+<th align="center"><code><span class='Function'>↕</span></code></th>
+<th align="center"><code><span class='Function'>»</span></code></th>
+<th align="center"><code><span class='Function'>«</span></code></th>
+<th align="center"><code><span class='Function'>/</span></code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">Monad</td>
+<td align="center"><code><span class='Function'>&lt;</span><span class='Value'>\</span></code></td>
+<td align="center"><code><span class='Function'>&lt;</span><span class='Value'>\.</span></code></td>
+<td align="center"><code><span class='Value'>i.</span></code></td>
+<td align="center"><code><span class='Comment'>#{.(_1-#){.]</span></code></td>
+<td align="center"><code><span class='Function'>-</span><span class='String'>@</span><span class='Comment'>#{.(1+#){.]</span></code></td>
+<td align="center"><code><span class='Function'>I</span><span class='Value'>.</span></code></td>
+</tr>
+<tr>
+<td align="center">Dyad</td>
+<td align="center"><code><span class='Brace'>{</span><span class='Value'>.</span></code></td>
+<td align="center"><code><span class='Brace'>}</span><span class='Value'>.</span></code></td>
+<td align="center"><code><span class='Bracket'>]</span><span class='Value'>\</span></code></td>
+<td align="center"><code><span class='Comment'>#@]{.,</span></code></td>
+<td align="center"><code><span class='Function'>-</span><span class='String'>@</span><span class='Comment'>#@]{.,~</span></code></td>
+<td align="center"><code><span class='Comment'>#</span></code></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th align="center">BQN</th>
+<th align="center"><code><span class='Function'>⍋</span></code></th>
+<th align="center"><code><span class='Function'>⍒</span></code></th>
+<th align="center"><code><span class='Function'>⊏</span></code></th>
+<th align="center"><code><span class='Function'>⊑</span></code></th>
+<th align="center"><code><span class='Function'>⊐</span></code></th>
+<th align="center"><code><span class='Function'>⊒</span></code></th>
+<th align="center"><code><span class='Function'>∊</span></code></th>
+<th align="center"><code><span class='Function'>⍷</span></code></th>
+<th align="center"><code><span class='Function'>⊔</span></code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">Monad</td>
+<td align="center"><code><span class='Function'>/</span><span class='Head'>:</span></code></td>
+<td align="center"><code><span class='Value'>\</span><span class='Head'>:</span></code></td>
+<td align="center"><code><span class='Brace'>{</span><span class='Value'>.</span></code></td>
+<td align="center"><code><span class='Number'>0</span><span class='Brace'>{</span><span class='Head'>::</span><span class='Separator'>,</span></code></td>
+<td align="center"><code><span class='Value'>i.~~.</span></code></td>
+<td align="center"><code><span class='Value'>…</span></code></td>
+<td align="center"><code><span class='Value'>~</span><span class='Head'>:</span></code></td>
+<td align="center"><code><span class='Value'>~.</span></code></td>
+<td align="center"><code><span class='Function'>&lt;/</span><span class='Value'>.i.</span><span class='String'>@</span><span class='Comment'>#</span></code></td>
+</tr>
+<tr>
+<td align="center">Dyad</td>
+<td align="center"><code><span class='Function'>I</span><span class='Value'>.</span></code></td>
+<td align="center"><code><span class='Function'>I</span><span class='Value'>.&amp;</span><span class='Head'>:</span><span class='Function'>-</span></code></td>
+<td align="center"><code><span class='Brace'>{</span></code></td>
+<td align="center"><code><span class='Brace'>{</span><span class='Head'>::</span></code></td>
+<td align="center"><code><span class='Value'>i.</span></code></td>
+<td align="center"><code><span class='Value'>…</span></code></td>
+<td align="center"><code><span class='Value'>e.</span></code></td>
+<td align="center"><code><span class='Function'>E</span><span class='Value'>.</span></code></td>
+<td align="center"><code><span class='Function'>&lt;/</span><span class='Value'>.</span></code></td>
+</tr>
+</tbody>
+</table>
+<p>Most of BQN's combinators have J equivalents. The J equivalent <code><span class='String'>&quot;</span><span class='Modifier2'>_</span></code> for <code><span class='Modifier'>˙</span></code> assumes a noun operand, but <code><span class='Modifier'>˙</span></code> makes a constant function for any operand. <code><span class='Modifier2'>◶</span></code> has arguments reversed relative to <code><span class='String'>@</span><span class='Value'>.</span></code>, and uses an actual array of functions rather than gerunds. Besides these, BQN's <code><span class='Modifier2'>⟜</span></code> is like a J hook, that is, <code><span class='Function'>F</span><span class='Modifier2'>⟜</span><span class='Function'>G</span></code> is <code><span class='Paren'>(</span><span class='Function'>F</span> <span class='Function'>G</span><span class='Paren'>)</span></code>, and <code><span class='Modifier2'>⊸</span></code> applies in the opposite direction.</p>
+<table>
+<thead>
+<tr>
+<th align="center">BQN</th>
+<th align="center"><code><span class='Modifier'>˙</span></code></th>
+<th align="center"><code><span class='Modifier'>˜</span></code></th>
+<th align="center"><code><span class='Modifier2'>∘</span></code></th>
+<th align="center"><code><span class='Modifier2'>○</span></code></th>
+<th align="center"><code><span class='Modifier2'>⌾</span></code></th>
+<th align="center"><code><span class='Modifier2'>⊘</span></code></th>
+<th align="center"><code><span class='Modifier2'>◶</span></code></th>
+<th align="center"><code><span class='Modifier2'>⎊</span></code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">J</td>
+<td align="center"><code><span class='String'>&quot;</span><span class='Modifier2'>_</span></code></td>
+<td align="center"><code><span class='Value'>~</span></code></td>
+<td align="center"><code><span class='String'>@</span><span class='Head'>:</span></code></td>
+<td align="center"><code><span class='Value'>&amp;</span><span class='Head'>:</span></code></td>
+<td align="center"><code><span class='Value'>&amp;.</span><span class='Head'>:</span></code></td>
+<td align="center"><code><span class='Head'>:</span></code></td>
+<td align="center"><code><span class='String'>@</span><span class='Value'>.</span></code></td>
+<td align="center"><code><span class='Head'>::</span></code></td>
+</tr>
+</tbody>
+</table>
+<p>For other modifiers the correspondence is looser. Here <code><span class='Modifier'>⌜</span></code> shows the dyadic case and <code><span class='Modifier'>´</span></code> <code><span class='Modifier'>˝</span></code> the monadic case only.</p>
+<table>
+<thead>
+<tr>
+<th align="center">BQN</th>
+<th align="center"><code><span class='Modifier'>¨</span></code></th>
+<th align="center"><code><span class='Modifier'>⌜</span></code></th>
+<th align="center"><code><span class='Modifier'>´</span></code></th>
+<th align="center"><code><span class='Modifier'>˝</span></code></th>
+<th align="center"><code><span class='Modifier'>`</span></code></th>
+<th align="center"><code><span class='Modifier'>˘</span></code></th>
+<th align="center"><code><span class='Modifier2'>⎉</span></code></th>
+<th align="center"><code><span class='Modifier2'>⚇</span></code></th>
+<th align="center"><code><span class='Modifier2'>⍟</span></code></th>
+<th align="center"><code><span class='Modifier'>⁼</span></code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">J</td>
+<td align="center"><code><span class='Value'>&amp;.</span><span class='Function'>&gt;</span></code></td>
+<td align="center"><code><span class='Value'>&amp;.</span><span class='Function'>&gt;/</span></code></td>
+<td align="center"><code><span class='Value'>&amp;.</span><span class='Function'>&gt;/</span></code></td>
+<td align="center"><code><span class='Function'>/</span></code></td>
+<td align="center"><code><span class='Function'>/</span><span class='Value'>\</span></code></td>
+<td align="center"><code><span class='String'>&quot;</span><span class='Modifier'>_1</span></code></td>
+<td align="center"><code><span class='String'>&quot;</span></code></td>
+<td align="center"><code><span class='Function'>L</span><span class='Head'>:</span></code></td>
+<td align="center"><code><span class='Value'>^</span><span class='Head'>:</span></code></td>
+<td align="center"><code><span class='Value'>^</span><span class='Head'>:</span><span class='Modifier'>_1</span></code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="for-writing"><a class="header" href="#for-writing">For writing</a></h2>
+<p>J's primitive nouns are easily defined in BQN.</p>
+<table>
+<thead>
+<tr>
+<th>J</th>
+<th>BQN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Value'>a.</span></code></td>
+<td><code><span class='String'>@</span><span class='Function'>+↕</span><span class='Number'>256</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Value'>a</span><span class='Head'>:</span></code></td>
+<td><code><span class='Function'>&lt;↕</span><span class='Number'>0</span></code></td>
+</tr>
+</tbody>
+</table>
+<p>Functions <code><span class='Function'>+</span></code> <code><span class='Function'>-</span></code> <code><span class='Function'>|</span></code> <code><span class='Function'>&lt;</span></code> <code><span class='Function'>&gt;</span></code> are the same in both languages.</p>
+<p>Some other primitives are essentially the same in J and BQN, but with different spellings (but <a href="transpose.html">transpose</a> behaves differently; J's dyadic <code><span class='Function'>|</span><span class='Head'>:</span></code> is more like <code><span class='Function'>⍉</span><span class='Modifier'>⁼</span></code>):</p>
+<table>
+<thead>
+<tr>
+<th align="center">J</th>
+<th align="center"><code><span class='Value'>*</span></code></th>
+<th align="center"><code><span class='Value'>%</span></code></th>
+<th align="center"><code><span class='Value'>^</span></code></th>
+<th align="center"><code><span class='Value'>^.</span></code></th>
+<th align="center"><code><span class='Value'>%</span><span class='Head'>:</span></code></th>
+<th align="center"><code><span class='Function'>&lt;</span><span class='Value'>.</span></code></th>
+<th align="center"><code><span class='Function'>&gt;</span><span class='Value'>.</span></code></th>
+<th align="center"><code><span class='Bracket'>[</span></code></th>
+<th align="center"><code><span class='Bracket'>]</span></code></th>
+<th align="center"><code><span class='Function'>|</span><span class='Value'>.</span></code></th>
+<th align="center"><code><span class='Function'>|</span><span class='Head'>:</span></code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">BQN</td>
+<td align="center"><code><span class='Function'>×</span></code></td>
+<td align="center"><code><span class='Function'>÷</span></code></td>
+<td align="center"><code><span class='Function'>⋆</span></code></td>
+<td align="center"><code><span class='Function'>⋆</span><span class='Modifier'>⁼</span></code></td>
+<td align="center"><code><span class='Function'>√</span></code></td>
+<td align="center"><code><span class='Function'>⌊</span></code></td>
+<td align="center"><code><span class='Function'>⌈</span></code></td>
+<td align="center"><code><span class='Function'>⊣</span></code></td>
+<td align="center"><code><span class='Function'>⊢</span></code></td>
+<td align="center"><code><span class='Function'>⌽</span></code></td>
+<td align="center"><code><span class='Function'>⍉</span></code></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th align="center">J</th>
+<th align="center"><code><span class='Value'>~</span></code></th>
+<th align="center"><code><span class='String'>@</span><span class='Head'>:</span></code></th>
+<th align="center"><code><span class='Value'>&amp;</span><span class='Head'>:</span></code></th>
+<th align="center"><code><span class='Value'>&amp;.</span><span class='Head'>:</span></code></th>
+<th align="center"><code><span class='Head'>:</span></code></th>
+<th align="center"><code><span class='String'>&quot;</span></code></th>
+<th align="center"><code><span class='Function'>L</span><span class='Head'>:</span></code></th>
+<th align="center"><code><span class='Value'>^</span><span class='Head'>:</span></code></th>
+<th align="center"><code><span class='Head'>::</span></code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">BQN</td>
+<td align="center"><code><span class='Modifier'>˜</span></code></td>
+<td align="center"><code><span class='Modifier2'>∘</span></code></td>
+<td align="center"><code><span class='Modifier2'>○</span></code></td>
+<td align="center"><code><span class='Modifier2'>⌾</span></code></td>
+<td align="center"><code><span class='Modifier2'>⊘</span></code></td>
+<td align="center"><code><span class='Modifier2'>⎉</span></code></td>
+<td align="center"><code><span class='Modifier2'>⚇</span></code></td>
+<td align="center"><code><span class='Modifier2'>⍟</span></code></td>
+<td align="center"><code><span class='Modifier2'>⎊</span></code></td>
+</tr>
+</tbody>
+</table>
+<p>The tables below give approximate implementations of J primitives. J has a whole lot of complicated primitives that no one uses (some of which are officially deprecated), so not everything is translated here. Operations that only apply to complex numbers are omitted because no BQN implementation currently supports them.</p>
+<table>
+<thead>
+<tr>
+<th>J</th>
+<th>Monad</th>
+<th>Dyad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Function'>=</span></code></td>
+<td><code><span class='Function'>⍷</span><span class='Modifier2'>⊸</span><span class='Paren'>(</span><span class='Function'>≡</span><span class='Modifier'>⌜</span><span class='Paren'>)</span></code></td>
+<td><code><span class='Function'>=</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>&lt;</span><span class='Head'>:</span></code></td>
+<td><code><span class='Function'>-</span><span class='Modifier2'>⟜</span><span class='Number'>1</span></code></td>
+<td><code><span class='Function'>≤</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>&gt;</span><span class='Head'>:</span></code></td>
+<td><code><span class='Number'>1</span><span class='Modifier2'>⊸</span><span class='Function'>+</span></code></td>
+<td><code><span class='Function'>≥</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>+</span><span class='Value'>.</span></code></td>
+<td></td>
+<td><code><span class='Function'>∨</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>+</span><span class='Head'>:</span></code></td>
+<td><code><span class='Number'>2</span><span class='Modifier2'>⊸</span><span class='Function'>×</span></code></td>
+<td><code><span class='Function'>¬∨</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Value'>*.</span></code></td>
+<td></td>
+<td><code><span class='Function'>∧</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Value'>*</span><span class='Head'>:</span></code></td>
+<td><code><span class='Function'>×</span><span class='Modifier'>˜</span></code></td>
+<td><code><span class='Function'>¬∧</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>-</span><span class='Value'>.</span></code></td>
+<td><code><span class='Function'>¬</span></code></td>
+<td><code><span class='Function'>¬</span><span class='Modifier2'>∘</span><span class='Function'>∊/⊣</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>-</span><span class='Head'>:</span></code></td>
+<td><code><span class='Function'>÷</span><span class='Modifier2'>⟜</span><span class='Number'>2</span></code></td>
+<td><code><span class='Function'>≡</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Value'>%.</span></code></td>
+<td><code><span class='Function'>Inverse</span></code>,</td>
+<td><code><span class='Function'>Solve</span></code> from <a href="https://github.com/mlochbaum/bqn-libs/blob/master/matrix.bqn">here</a></td>
+</tr>
+<tr>
+<td><code><span class='Value'>$</span></code></td>
+<td><code><span class='Function'>≢</span></code></td>
+<td><code><span class='Function'>⥊</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Value'>~.</span></code></td>
+<td><code><span class='Function'>⍷</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code><span class='Value'>~</span><span class='Head'>:</span></code></td>
+<td><code><span class='Function'>∊</span></code></td>
+<td><code><span class='Function'>≠</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Separator'>,</span></code></td>
+<td><code><span class='Function'>⥊</span></code></td>
+<td><code><span class='Function'>∾</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Separator'>,</span><span class='Value'>.</span></code></td>
+<td><code><span class='Function'>⥊</span><span class='Modifier'>˘</span></code></td>
+<td><code><span class='Function'>∾</span><span class='Modifier'>˘</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Separator'>,</span><span class='Head'>:</span></code></td>
+<td><code><span class='Function'>≍</span></code></td>
+<td><code><span class='Function'>≍</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Head'>;</span></code></td>
+<td><code><span class='Function'>∾</span></code></td>
+<td><code><span class='Function'>∾</span><span class='Modifier2'>⟜</span><span class='Paren'>(</span><span class='Function'>&lt;</span><span class='Modifier2'>⍟</span><span class='Paren'>(</span><span class='Number'>1</span><span class='Function'>≥≡</span><span class='Paren'>))</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Comment'>#</span></code></td>
+<td><code><span class='Function'>≠</span></code></td>
+<td><code><span class='Function'>/</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Comment'>#.</span></code></td>
+<td><code><span class='Function'>+</span><span class='Modifier'>˜</span><span class='Modifier2'>⊸</span><span class='Function'>+</span><span class='Modifier'>˜´</span><span class='Modifier2'>∘</span><span class='Function'>⌽</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code><span class='Comment'>#:</span></code></td>
+<td><code><span class='Function'>⌽</span><span class='Number'>2</span><span class='Function'>|⌊</span><span class='Modifier2'>∘</span><span class='Function'>÷</span><span class='Modifier2'>⟜</span><span class='Number'>2</span><span class='Modifier2'>⍟</span><span class='Paren'>(</span><span class='Function'>↕</span><span class='Number'>1</span><span class='Function'>+</span><span class='Nothing'>·</span><span class='Function'>⌊</span><span class='Number'>2</span><span class='Function'>⋆</span><span class='Modifier'>⁼</span><span class='Function'>⊢</span><span class='Paren'>)</span></code></td>
+<td><code><span class='Brace'>{</span><span class='Value'>𝕨</span><span class='Function'>|</span><span class='Number'>1</span><span class='Function'>↓⌊</span><span class='Modifier2'>∘</span><span class='Function'>÷</span><span class='Modifier'>`</span><span class='Modifier2'>⌾</span><span class='Function'>⌽</span><span class='Value'>𝕨</span><span class='Function'>∾&lt;</span><span class='Value'>𝕩</span><span class='Brace'>}</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>!</span></code></td>
+<td><code><span class='Function'>×</span><span class='Modifier'>´</span><span class='Number'>1</span><span class='Function'>+↕</span></code></td>
+<td><code><span class='Paren'>(</span><span class='Function'>-÷</span><span class='Modifier2'>○</span><span class='Paren'>(</span><span class='Function'>×</span><span class='Modifier'>´</span><span class='Paren'>)</span><span class='Number'>1</span><span class='Modifier2'>⊸</span><span class='Function'>+</span><span class='Paren'>)</span><span class='Modifier2'>⟜</span><span class='Function'>↕</span><span class='Modifier'>˜</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>/</span><span class='Head'>:</span></code></td>
+<td><code><span class='Function'>⍋</span></code></td>
+<td><code><span class='Function'>⍋</span><span class='Modifier2'>⊸</span><span class='Function'>⊏</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Value'>\</span><span class='Head'>:</span></code></td>
+<td><code><span class='Function'>⍒</span></code></td>
+<td><code><span class='Function'>⍒</span><span class='Modifier2'>⊸</span><span class='Function'>⊏</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Brace'>{</span></code></td>
+<td><code><span class='Paren'>(</span><span class='Function'>&lt;</span><span class='Bracket'>⟨⟩</span><span class='Paren'>)</span><span class='Function'>&lt;</span><span class='Modifier2'>⊸</span><span class='Function'>∾</span><span class='Modifier'>⌜´</span><span class='Function'>⊢</span></code></td>
+<td><code><span class='Function'>⊏</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Brace'>{</span><span class='Value'>.</span></code></td>
+<td><code><span class='Function'>⊏</span></code></td>
+<td><code><span class='Function'>↑</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Brace'>{</span><span class='Head'>:</span></code></td>
+<td><code><span class='Function'>⊢</span><span class='Modifier'>˝</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code><span class='Brace'>{</span><span class='Head'>::</span></code></td>
+<td></td>
+<td><code><span class='Function'>⊑</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Brace'>}</span><span class='Value'>.</span></code></td>
+<td><code><span class='Number'>1</span><span class='Modifier2'>⊸</span><span class='Function'>↓</span></code></td>
+<td><code><span class='Function'>↓</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Brace'>}</span><span class='Head'>:</span></code></td>
+<td><code><span class='Number'>¯1</span><span class='Modifier2'>⊸</span><span class='Function'>↓</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code><span class='String'>&quot;</span><span class='Value'>.</span></code></td>
+<td><code><span class='Function'>•BQN</span></code> (or <code><span class='Function'>•ParseFloat</span></code>)</td>
+<td></td>
+</tr>
+<tr>
+<td><code><span class='String'>&quot;</span><span class='Head'>:</span></code></td>
+<td><code><span class='Function'>•Fmt</span></code> (or <code><span class='Function'>•Repr</span></code>)</td>
+<td></td>
+</tr>
+<tr>
+<td><code><span class='Head'>?</span></code></td>
+<td><code><span class='Value'>•rand.</span><span class='Function'>Range</span><span class='Modifier2'>⚇</span><span class='Number'>0</span></code></td>
+<td><code><span class='Value'>•rand.</span><span class='Function'>Deal</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Value'>e.</span></code></td>
+<td><code><span class='Function'>&gt;&lt;</span><span class='Modifier2'>∘</span><span class='Function'>∾∊</span><span class='Modifier'>¨</span><span class='Function'>⊢</span></code></td>
+<td><code><span class='Function'>∊</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>E</span><span class='Value'>.</span></code></td>
+<td></td>
+<td><code><span class='Function'>⍷</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Value'>i.</span></code></td>
+<td><code><span class='Function'>↕</span></code> (<code><span class='Function'>⥊</span><span class='Modifier2'>⟜</span><span class='Paren'>(</span><span class='Function'>↕×</span><span class='Modifier'>´</span><span class='Paren'>)</span></code> for lists)</td>
+<td><code><span class='Function'>⊐</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Value'>i</span><span class='Head'>:</span></code></td>
+<td><code><span class='Brace'>{</span><span class='Value'>𝕩</span><span class='Function'>-</span><span class='Modifier'>˜</span><span class='Function'>↕</span><span class='Number'>1</span><span class='Function'>+</span><span class='Number'>2</span><span class='Function'>×</span><span class='Value'>𝕩</span><span class='Brace'>}</span></code></td>
+<td><code><span class='Function'>≠</span><span class='Modifier2'>∘</span><span class='Function'>⊣-</span><span class='Number'>1</span><span class='Function'>+⌽</span><span class='Modifier2'>⊸</span><span class='Function'>⊐</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>I</span><span class='Value'>.</span></code></td>
+<td><code><span class='Function'>/</span></code></td>
+<td><code><span class='Function'>⍋</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>L</span><span class='Value'>.</span></code></td>
+<td><code><span class='Function'>≡</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code><span class='Value'>o.</span></code></td>
+<td><code><span class='Number'>π</span><span class='Modifier2'>⊸</span><span class='Function'>×</span></code></td>
+<td><code><span class='Value'>•math</span></code></td>
+</tr>
+</tbody>
+</table>
+<p>Some J modifier expressions are translated below. BQN doesn't keep track of the rank of functions, so the &quot;close&quot; compositions <code><span class='String'>@</span></code> <code><span class='Value'>&amp;</span></code> <code><span class='Value'>&amp;.</span></code> have no BQN equivalents: instead, specify a rank after composing.</p>
+<table>
+<thead>
+<tr>
+<th>J</th>
+<th>BQN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Value'>&amp;.</span><span class='Function'>&gt;</span></code></td>
+<td><code><span class='Modifier'>¨</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>F/</span> <span class='Value'>y</span></code></td>
+<td><code><span class='Function'>F</span><span class='Modifier'>˝</span> <span class='Value'>y</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Value'>x</span> <span class='Function'>F</span><span class='Value'>&amp;.</span><span class='Function'>&gt;/</span> <span class='Value'>y</span></code></td>
+<td><code><span class='Value'>x</span> <span class='Function'>F</span><span class='Modifier'>⌜</span> <span class='Value'>y</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Value'>x</span> <span class='Function'>F/</span> <span class='Value'>y</span></code></td>
+<td><code><span class='Value'>x</span> <span class='Function'>F</span><span class='Modifier2'>⎉</span><span class='Value'>r</span><span class='Ligature'>‿</span><span class='Number'>∞</span> <span class='Value'>y</span></code> where <code><span class='Value'>r</span></code> is <code><span class='Function'>F</span></code>'s left rank</td>
+</tr>
+<tr>
+<td><code><span class='Function'>F</span><span class='Modifier'>`</span><span class='Function'>G</span><span class='Modifier'>`</span><span class='Function'>H</span><span class='String'>@</span><span class='Value'>.</span><span class='Function'>C</span></code></td>
+<td><code><span class='Function'>C</span><span class='Modifier2'>◶</span><span class='Bracket'>⟨</span><span class='Function'>F</span><span class='Separator'>,</span><span class='Function'>G</span><span class='Separator'>,</span><span class='Function'>H</span><span class='Bracket'>⟩</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Value'>x</span> <span class='Value'>y</span><span class='Brace'>}</span> <span class='Value'>z</span></code></td>
+<td><code><span class='Value'>x</span><span class='Modifier2'>⌾</span><span class='Paren'>(</span><span class='Value'>y</span><span class='Modifier2'>⊸</span><span class='Function'>⊏</span><span class='Paren'>)</span> <span class='Value'>z</span></code> (<code><span class='Value'>x</span><span class='Modifier'>¨</span></code> if <code><span class='Value'>x</span></code> is an atom)</td>
+</tr>
+<tr>
+<td><code><span class='Value'>x</span> <span class='Function'>F/</span> <span class='Value'>.</span> <span class='Function'>G</span> <span class='Value'>y</span></code></td>
+<td><code><span class='Value'>x</span> <span class='Function'>F</span><span class='Modifier'>˝</span><span class='Modifier2'>∘</span><span class='Function'>G</span><span class='Modifier2'>⎉</span><span class='Number'>1</span><span class='Ligature'>‿</span><span class='Number'>∞</span> <span class='Value'>y</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>F</span> <span class='Head'>:</span><span class='Value'>.</span> <span class='Function'>G</span></code></td>
+<td><code><span class='Brace'>{</span><span class='Function'>𝕊</span><span class='Head'>:</span> <span class='Value'>𝕨</span><span class='Function'>F</span><span class='Value'>𝕩</span><span class='Head'>;</span> <span class='Function'>𝕊</span><span class='Modifier'>⁼</span><span class='Head'>:</span> <span class='Value'>𝕨</span><span class='Function'>G</span><span class='Value'>𝕩</span><span class='Brace'>}</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>&lt;</span><span class='Head'>;</span><span class='Value'>.</span><span class='Modifier'>_1</span></code></td>
+<td><code><span class='Paren'>((</span><span class='Number'>1</span><span class='Function'>-</span><span class='Modifier'>˜</span><span class='Function'>¬×+</span><span class='Modifier'>`</span><span class='Paren'>)</span><span class='Function'>=</span><span class='Modifier2'>⟜</span><span class='Function'>⊏</span><span class='Modifier2'>⊘</span><span class='Function'>⊣</span><span class='Paren'>)</span><span class='Function'>⊔⊢</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Value'>x</span> <span class='Brace'>{</span><span class='Value'>.</span><span class='Function'>!</span><span class='Value'>.f</span> <span class='Value'>y</span></code></td>
+<td><code><span class='Value'>y</span> <span class='Function'>»</span> <span class='Value'>x</span><span class='Function'>⥊</span><span class='Value'>f</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Value'>x</span> <span class='Function'>|</span><span class='Value'>.</span><span class='Function'>!</span><span class='Value'>.f</span> <span class='Value'>y</span></code></td>
+<td><code><span class='Value'>x</span> <span class='Function'>⥊</span><span class='Modifier2'>⟜</span><span class='Value'>f</span><span class='Modifier2'>⊸</span><span class='Function'>«</span> <span class='Value'>y</span></code>, or <code><span class='Paren'>(</span><span class='Function'>-</span><span class='Value'>x</span><span class='Paren'>)</span> <span class='Function'>⥊</span><span class='Modifier2'>⟜</span><span class='Value'>f</span><span class='Modifier2'>⊸</span><span class='Function'>»</span> <span class='Value'>y</span></code> if <code><span class='Value'>𝕩</span><span class='Function'>&lt;</span><span class='Number'>0</span></code></td>
+</tr>
+</tbody>
+</table>
+<p>BQN uses functions, not modifiers, for structural manipulation. The following table gives BQN functions corresponding to J's structural modifiers. The result is an array of arrays; use <code><span class='Function'>F</span><span class='Modifier'>¨</span></code> to apply a function to each of these, and <code><span class='Function'>&gt;F</span><span class='Modifier'>¨</span></code> to apply a function and merge the results into a single array.</p>
+<table>
+<thead>
+<tr>
+<th>J</th>
+<th>Monad</th>
+<th>Dyad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Function'>/</span><span class='Value'>.</span></code></td>
+<td><code><span class='Paren'>(</span><span class='Function'>+</span><span class='Modifier'>⌜´</span><span class='Function'>↕</span><span class='Modifier'>¨</span><span class='Modifier2'>∘</span><span class='Function'>≢</span><span class='Paren'>)</span><span class='Modifier2'>⊸</span><span class='Function'>⊔</span></code></td>
+<td><code><span class='Function'>⊐</span><span class='Modifier2'>⊸</span><span class='Function'>⊔</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Value'>\</span></code></td>
+<td><code><span class='Number'>1</span><span class='Function'>↓↑</span></code></td>
+<td><code><span class='Function'>&lt;</span><span class='Modifier'>˘</span><span class='Function'>↕</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Value'>\.</span></code></td>
+<td><code><span class='Number'>¯1</span><span class='Function'>↓↓</span></code></td>
+<td></td>
+</tr>
+</tbody>
+</table>

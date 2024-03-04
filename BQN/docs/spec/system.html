@@ -1,0 +1,970 @@
+<head>
+  <link href="../favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+  <link href="../style.css" rel="stylesheet"/>
+  <title>Specification: BQN system-provided values</title>
+</head>
+<div class="nav">(<a href="https://github.com/mlochbaum/BQN">github</a>) / <a href="../index.html">BQN</a> / <a href="index.html">spec</a></div>
+<h1 id="specification-bqn-system-provided-values"><a class="header" href="#specification-bqn-system-provided-values">Specification: BQN system-provided values</a></h1>
+<p>This portion of the spec is still potentially subject to major changes.</p>
+<p>The <code><span class='Value'>•</span></code> symbol is used to access values other than primitives provided by BQN.</p>
+<p>All system values described in the BQN specification are optional: an implementation does not have to include any of them. However, if a system value with one of the names given below is included, then it must have the specified behavior. For namespaces this rule applies to individual fields as well: a namespace may be provided with only some of the fields, but a field with one of the given names must behave as specified.</p>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#execution">Execution</a></td>
+<td><code><span class='Function'>•BQN</span></code>, <code><span class='Function'>•ReBQN</span></code>, <code><span class='Value'>•primitives</span></code></td>
+</tr>
+<tr>
+<td><a href="#control">Control</a></td>
+<td><code><span class='Modifier2'>•_while_</span></code></td>
+</tr>
+<tr>
+<td><a href="#scripts">Scripts</a></td>
+<td><code><span class='Function'>•Import</span></code>, <code><span class='Value'>•args</span></code>, <code><span class='Function'>•Exit</span></code>, …</td>
+</tr>
+<tr>
+<td><a href="#files">Files</a> (<a href="#file-paths">paths</a>, <a href="#file-metadata">metadata</a>, <a href="#file-access">access</a>, <a href="#open-file-object">opened</a>)</td>
+<td><code><span class='Value'>•file</span></code>, <code><span class='Function'>•FChars</span></code>, <code><span class='Function'>•FLines</span></code>, <code><span class='Function'>•FBytes</span></code></td>
+</tr>
+<tr>
+<td><a href="#input-and-output">Input and output</a> (<a href="#terminal-io">terminal</a>)</td>
+<td><code><span class='Function'>•Out</span></code>, <code><span class='Function'>•Show</span></code>, <code><span class='Function'>•Repr</span></code>, <code><span class='Function'>•Fmt</span></code>, …, <code><span class='Value'>•term</span></code></td>
+</tr>
+<tr>
+<td><a href="#interface">Interface</a> (<a href="#foreign-function-interface-ffi">FFI</a>)</td>
+<td><code><span class='Function'>•SH</span></code>, <code><span class='Function'>•FFI</span></code></td>
+</tr>
+<tr>
+<td><a href="#platform">Platform</a></td>
+<td><code><span class='Value'>•platform</span></code></td>
+</tr>
+<tr>
+<td><a href="#operation-properties">Operation properties</a></td>
+<td><code><span class='Function'>•Type</span></code>, <code><span class='Function'>•Glyph</span></code>, <code><span class='Function'>•Source</span></code>, <code><span class='Function'>•Decompose</span></code></td>
+</tr>
+<tr>
+<td><a href="#namespaces">Namespaces</a></td>
+<td><code><span class='Value'>•ns</span></code></td>
+</tr>
+<tr>
+<td><a href="#data-structures">Data structures</a></td>
+<td><code><span class='Function'>•HashMap</span></code></td>
+</tr>
+<tr>
+<td><a href="#time">Time</a></td>
+<td><code><span class='Function'>•UnixTime</span></code>, <code><span class='Function'>•Delay</span></code>, <code><span class='Modifier'>•_timed</span></code>, …</td>
+</tr>
+<tr>
+<td><a href="#math">Math</a></td>
+<td><code><span class='Value'>•math</span></code></td>
+</tr>
+<tr>
+<td><a href="#random-generation">Random generation</a></td>
+<td><code><span class='Value'>•rand</span></code>, <code><span class='Function'>•MakeRand</span></code></td>
+</tr>
+<tr>
+<td><a href="#bitwise-operations">Bitwise operations</a></td>
+<td><code><span class='Value'>•bit</span></code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="execution"><a class="header" href="#execution">Execution</a></h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Function'>•BQN</span></code></td>
+<td>Evaluate the argument string in an isolated scope</td>
+</tr>
+<tr>
+<td><code><span class='Function'>•ReBQN</span></code></td>
+<td>Create a BQN-like evaluation function with options <code><span class='Value'>𝕩</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Value'>•primitives</span></code></td>
+<td>List of primitives as glyph-value pairs</td>
+</tr>
+</tbody>
+</table>
+<p>The left argument to <code><span class='Function'>•BQN</span></code> or the result of <code><span class='Function'>•ReBQN</span></code>, if given, is a list of up to three elements, giving a prefix of <code><span class='Value'>•state</span></code> (see next section) during evaluations of that function. Thus <code><span class='Bracket'>⟨</span><span class='String'>&quot;&quot;</span><span class='Separator'>,</span><span class='String'>&quot;xyz&quot;</span><span class='Bracket'>⟩</span><span class='Function'>•BQN</span><span class='String'>&quot;•name&quot;</span></code> returns <code><span class='String'>&quot;xyz&quot;</span></code>.</p>
+<p><code><span class='Function'>•ReBQN</span></code> accepts a namespace <code><span class='Value'>𝕩</span></code>. The following options are specified if supported:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Values (default first)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Value'>repl</span></code></td>
+<td><code><span class='String'>&quot;none&quot;</span></code>, <code><span class='String'>&quot;strict&quot;</span></code>, <code><span class='String'>&quot;loose&quot;</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Value'>primitives</span></code></td>
+<td>List of glyph-value pairs; default <code><span class='Value'>•primitives</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Value'>system</span></code></td>
+<td><code><span class='String'>&quot;all&quot;</span></code>, <code><span class='String'>&quot;none&quot;</span></code>, <code><span class='String'>&quot;safe&quot;</span></code> or list of names</td>
+</tr>
+<tr>
+<td><code><span class='Value'>scope</span></code></td>
+<td><code><span class='String'>&quot;none&quot;</span></code>, <code><span class='String'>&quot;read&quot;</span></code>, <code><span class='String'>&quot;modify&quot;</span></code> or list of name-setting pairs</td>
+</tr>
+</tbody>
+</table>
+<p>The option <code><span class='Value'>repl</span></code> indicates how variables are retained across calls: with &quot;none&quot; they are not saved; with &quot;strict&quot;, they are saved and can't be redefined; and with &quot;loose&quot; they may be redefined. Each element in <code><span class='Value'>primitives</span></code> gives the glyph and value for a primitive to be made available. The value must have an operation type and its type determines the primitive's role. <code><span class='Value'>system</span></code> in general gives the list of system values to be made available, with shorthand values to indicate all currently-available ones, none of them, or only a subset that cannot be used to interact with anything outside of the execution context. <code><span class='Value'>scope</span></code> indicates allowed interaction with the scope in which <code><span class='Function'>•ReBQN</span></code> is <em>called</em> (not loaded): with &quot;read&quot; variables may be read and with &quot;modify&quot; they may be read or modified.</p>
+<h2 id="control"><a class="header" href="#control">Control</a></h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Modifier2'>•_while_</span></code></td>
+<td>Run <code><span class='Function'>𝔽</span></code> as long as <code><span class='Function'>𝔾</span></code> returns <code><span class='Number'>1</span></code></td>
+</tr>
+</tbody>
+</table>
+<p>The 2-modifier <code><span class='Modifier2'>•_while_</span></code> repeatedly checks <code><span class='Value'>𝕨</span><span class='Function'>𝔾</span><span class='Value'>v</span></code>, where <code><span class='Value'>v</span></code> is initially <code><span class='Value'>𝕩</span></code>. The result must be <code><span class='Number'>0</span></code> or <code><span class='Number'>1</span></code>, or this causes an error. If <code><span class='Number'>0</span></code>, it returns <code><span class='Value'>v</span></code>, and if <code><span class='Number'>1</span></code> it updates <code><span class='Value'>v</span></code> to <code><span class='Value'>𝕨</span><span class='Function'>𝔽</span><span class='Value'>v</span></code> and starts again. An equivalent implementation minus the boolean check is <code><span class='Brace'>{</span><span class='Value'>𝕨</span><span class='Paren'>(</span><span class='Value'>𝕨</span><span class='Function'>𝕊𝔽</span><span class='Paren'>)</span><span class='Modifier2'>⍟</span><span class='Function'>𝔾</span><span class='Value'>𝕩</span><span class='Brace'>}</span></code>. However, this code consumes stack space with every call in a BQN implementation without tail call optimization. <code><span class='Modifier2'>•_while_</span></code> should use only a constant amount of memory.</p>
+<h2 id="scripts"><a class="header" href="#scripts">Scripts</a></h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Function'>•Import</span></code></td>
+<td>Load a script file</td>
+</tr>
+<tr>
+<td><code><span class='Value'>•state</span></code></td>
+<td><code><span class='Bracket'>⟨</span><span class='Value'>•path</span><span class='Separator'>,</span> <span class='Value'>•name</span><span class='Separator'>,</span> <span class='Value'>•args</span><span class='Bracket'>⟩</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Value'>•args</span></code></td>
+<td>Arguments passed to current file</td>
+</tr>
+<tr>
+<td><code><span class='Value'>•path</span></code></td>
+<td>Current file's path</td>
+</tr>
+<tr>
+<td><code><span class='Value'>•name</span></code></td>
+<td>Current filename</td>
+</tr>
+<tr>
+<td><code><span class='Value'>•wdpath</span></code></td>
+<td>Shell's working directory path</td>
+</tr>
+<tr>
+<td><code><span class='Function'>•Exit</span></code></td>
+<td>Leave the top-level running program</td>
+</tr>
+</tbody>
+</table>
+<p><code><span class='Function'>•Import</span></code> loads another BQN script. The script is evaluated in its own isolated scope, and its result is either the result of the last line, or a module if it exports with <code><span class='Gets'>⇐</span></code> at the top level. If it is a module, then it must be destructured immediately unless first-class namespaces are possible.</p>
+<p>The right argument is a filename, which may be relative or absolute. Relative paths are taken relative to the source file where this instance of <code><span class='Function'>•Import</span></code> was written. The left argument, if given, is the list of arguments that should be passed through to the file as <code><span class='Value'>•args</span></code>. If no left argument is given then <code><span class='Bracket'>⟨⟩</span></code> is used for <code><span class='Value'>•args</span></code>. However, the behavior is different in this case. The same file will only be loaded once in a given BQN program by <code><span class='Function'>•Import</span></code> calls with no left argument: the first such call saves the returned value, even if it is mutable, and subsequent calls return this saved value. To avoid this and reload the file, pass a left argument of <code><span class='Bracket'>⟨⟩</span></code>.</p>
+<p><code><span class='Value'>•args</span></code> is the arguments passed as the file was invoked, either from the command line or <code><span class='Function'>•Import</span></code>. For command line calls it is a list of strings.</p>
+<p><code><span class='Value'>•path</span></code> simply gives the path of the file in which it appears. It includes a trailing slash but not the name of the file itself.</p>
+<p><code><span class='Value'>•name</span></code> gives the name, including the extension, of the file in which it appears. It doesn't include the path.</p>
+<p><code><span class='Value'>•wdpath</span></code> returns the path of the current working directory, like the Unix <code><span class='Value'>pwd</span></code> command, but including a trailing slash.</p>
+<p><code><span class='Function'>•Exit</span></code> immediately terminates the running BQN process. If the argument is a valid return code (on Unix, an integer), it is returned; otherwise, the default return code (the one returned when the end of the program is reached) is used.</p>
+<h2 id="files"><a class="header" href="#files">Files</a></h2>
+<p>The system namespace value <code><span class='Value'>•file</span></code> deals with file operations. For the purposes of <code><span class='Value'>•file</span></code>, paths in the filesystem are always strings. As with <code><span class='Function'>•Import</span></code>, file paths may be relative or absolute, and relative paths are relative to <code><span class='Value'>•path</span></code>, except in <code><span class='Value'>•file.</span><span class='Function'>At</span></code> which allows <code><span class='Value'>𝕨</span></code> to specify an alternate base directory. The value <code><span class='Value'>•path</span></code> used for a particular instance of <code><span class='Value'>•file</span></code> is determined by the file that contains that instance.</p>
+<p>Possible fields of <code><span class='Value'>•file</span></code> are given in the subsections below.</p>
+<h3 id="file-paths"><a class="header" href="#file-paths">File paths</a></h3>
+<p>The following functions manipulate paths and don't access files. Each takes a relative or absolute path <code><span class='Value'>𝕩</span></code>, and <code><span class='Function'>At</span></code> may also take a base directory <code><span class='Value'>𝕨</span></code>.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Value'>path</span></code></td>
+<td>Path of this source file, that is, <code><span class='Value'>•path</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>At</span></code></td>
+<td>Join base path <code><span class='Value'>𝕨</span></code>, or <code><span class='Value'>•path</span></code> if not given, to <code><span class='Value'>𝕩</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>Name</span></code></td>
+<td>File name including extension</td>
+</tr>
+<tr>
+<td><code><span class='Function'>Parent</span></code></td>
+<td>Path of the containing directory, with trailing backslash</td>
+</tr>
+<tr>
+<td><code><span class='Function'>BaseName</span></code></td>
+<td>File name, with dot and extension removed</td>
+</tr>
+<tr>
+<td><code><span class='Function'>Extension</span></code></td>
+<td>File extension, including leading dot</td>
+</tr>
+<tr>
+<td><code><span class='Function'>Parts</span></code></td>
+<td>List of parent, base name, and extension</td>
+</tr>
+</tbody>
+</table>
+<p>The path returned by <code><span class='Function'>At</span></code> is not simplified to remove <code><span class='Value'>.</span></code> or <code><span class='Value'>..</span></code>: it contains all components of the two joined paths. If <code><span class='Value'>𝕩</span></code> is an absolute path, it returns <code><span class='Value'>𝕩</span></code>. If <code><span class='Value'>𝕩</span></code> is empty, it returns <code><span class='Value'>𝕨</span></code> unchanged.</p>
+<h3 id="file-metadata"><a class="header" href="#file-metadata">File metadata</a></h3>
+<p>Metadata functions may query information about a file or directory but do not read to or write from it. Each takes a path <code><span class='Value'>𝕩</span></code>, and some functions also allow new data in <code><span class='Value'>𝕨</span></code>. The returned data in any case is the specified property.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Function'>Exists</span></code></td>
+<td><code><span class='Number'>1</span></code> if the file exists and <code><span class='Number'>0</span></code> otherwise</td>
+</tr>
+<tr>
+<td><code><span class='Function'>Type</span></code></td>
+<td>A character indicating the file's type</td>
+</tr>
+<tr>
+<td><code><span class='Function'>Created</span></code></td>
+<td>Time created</td>
+</tr>
+<tr>
+<td><code><span class='Function'>Accessed</span></code></td>
+<td>Time of last access</td>
+</tr>
+<tr>
+<td><code><span class='Function'>Modified</span></code></td>
+<td>Time of last modification</td>
+</tr>
+<tr>
+<td><code><span class='Function'>Size</span></code></td>
+<td>Total size in bytes</td>
+</tr>
+<tr>
+<td><code><span class='Function'>Permissions</span></code></td>
+<td>Query or set file permissions</td>
+</tr>
+<tr>
+<td><code><span class='Function'>Owner</span></code></td>
+<td>Query or set owner user ID and group ID number</td>
+</tr>
+<tr>
+<td><code><span class='Function'>RealPath</span></code></td>
+<td>Canonical path of file</td>
+</tr>
+</tbody>
+</table>
+<p>Times are Unix timestamps, that is, non-leap seconds since the Unix epoch, as used by <a href="#time">time</a> system values. File permissions on Unix are a three-element list of numbers giving the permissions for the owner, group, and other users. The file type is one of the following characters for the POSIX file types, matching Unix <code><span class='Value'>ls</span> <span class='Function'>-</span><span class='Value'>l</span></code> with <code><span class='String'>'f'</span></code> instead of <code><span class='String'>'-'</span></code>.</p>
+<ul>
+<li><code><span class='String'>'f'</span></code>: File</li>
+<li><code><span class='String'>'d'</span></code>: Directory</li>
+<li><code><span class='String'>'l'</span></code>: Symlink</li>
+<li><code><span class='String'>'p'</span></code>: Pipe (FIFO)</li>
+<li><code><span class='String'>'s'</span></code>: Socket</li>
+<li><code><span class='String'>'b'</span></code>: Block device</li>
+<li><code><span class='String'>'c'</span></code>: Character device</li>
+</ul>
+<p><code><span class='Function'>RealPath</span></code> converts the argument file to an equivalent one without any components that are <code><span class='Value'>.</span></code> or <code><span class='Value'>..</span></code> or symlinks. This requires the directories along the path to check if they are symlinks.</p>
+<h3 id="file-access"><a class="header" href="#file-access">File access</a></h3>
+<p>File access functions read or write files, either by manipulating files as a whole or interacting with the contents. Whole-file functions cannot overwrite target files: that is, <code><span class='Function'>Rename</span></code> and <code><span class='Function'>Copy</span></code> must give an error if a file exists at <code><span class='Value'>𝕨</span></code>, and <code><span class='Function'>CreateDir</span></code> if a file exists at <code><span class='Value'>𝕩</span></code>, while <code><span class='Function'>Chars</span></code>, <code><span class='Function'>Lines</span></code>, and <code><span class='Function'>Bytes</span></code> can overwrite the contents of an existing file <code><span class='Value'>𝕨</span></code>. However, these three functions must give an error if <code><span class='Value'>𝕨</span></code> exists and is a directory.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Function'>Open</span></code></td>
+<td>Return an open file object based on <code><span class='Value'>𝕩</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>Rename</span></code></td>
+<td>Rename file <code><span class='Value'>𝕩</span></code> with path <code><span class='Value'>𝕨</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>Copy</span></code></td>
+<td>Copy file <code><span class='Value'>𝕩</span></code> to path <code><span class='Value'>𝕨</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>CreateDir</span></code></td>
+<td>Create a directory at path <code><span class='Value'>𝕩</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>Remove</span></code></td>
+<td>Delete file <code><span class='Value'>𝕩</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>RemoveDir</span></code></td>
+<td>Recursively delete directory <code><span class='Value'>𝕩</span></code> and all contents</td>
+</tr>
+<tr>
+<td><code><span class='Function'>List</span></code></td>
+<td>Return names of all files in directory <code><span class='Value'>𝕩</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>Chars</span></code></td>
+<td>Read from or write to entire file, as characters</td>
+</tr>
+<tr>
+<td><code><span class='Function'>Lines</span></code></td>
+<td>Read from or write to entire file, as lines</td>
+</tr>
+<tr>
+<td><code><span class='Function'>Bytes</span></code></td>
+<td>Read from or write to entire file, as bytes</td>
+</tr>
+<tr>
+<td><code><span class='Function'>MapBytes</span></code></td>
+<td>Create a memory-mapped array aliasing the file</td>
+</tr>
+</tbody>
+</table>
+<p><code><span class='Function'>Rename</span></code>, <code><span class='Function'>Copy</span></code>, and <code><span class='Function'>CreateDir</span></code> return the path of the new file. <code><span class='Function'>Remove</span></code> and <code><span class='Function'>RemoveDir</span></code> return <code><span class='Number'>1</span></code> to indicate successful removal (and error otherwise).</p>
+<p><code><span class='Function'>List</span></code> returns filenames only, without full paths. It lists all files and directories including hidden ones, but not the current and parent directory names <code><span class='Value'>.</span></code> and <code><span class='Value'>..</span></code>.</p>
+<p>Functions <code><span class='Function'>Chars</span></code>, <code><span class='Function'>Lines</span></code>, and <code><span class='Function'>Bytes</span></code> are all ambivalent. If only <code><span class='Value'>𝕩</span></code> is given, then it is a filename, and the result is the contents of the file in the appropriate format. If there are two arguments, then <code><span class='Value'>𝕨</span></code> is the filename and <code><span class='Value'>𝕩</span></code> is the desired contents. These are written to the file, overwriting its contents, and the absolute filename <code><span class='Value'>𝕨</span></code> is returned. The three formats are:</p>
+<ul>
+<li>Chars: List of BQN characters, effectively UTF-32. The file is assumed to be UTF-8 encoded.</li>
+<li>Lines: List of BQN strings. The file is decoded as with chars, then split into lines by CR, LR, or CRLF line endings.</li>
+<li>Bytes: List of single-byte values, stored as BQN characters from <code><span class='String'>@</span></code> to <code><span class='String'>@</span><span class='Function'>+</span><span class='Number'>255</span></code>.</li>
+</ul>
+<p>The <code><span class='Function'>MapBytes</span></code> function only takes one argument, a filename, and returns an array matching the result of <code><span class='Function'>Bytes</span></code>. However, the array data should be <a href="https://en.wikipedia.org/wiki/Memory-mapped_file">memory-mapped</a> allowing it to be loaded into memory on use. Undefined behavior, including a crash or writing arbitrary memory, may result if the underlying file is modified after <code><span class='Function'>MapBytes</span></code> is called, and the result or slices of it are still used.</p>
+<p>The following short names can also be provided for file access. If so, they use the definitions from above even if <code><span class='Value'>•file</span></code> is not provided.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Equivalent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Function'>•FChars</span></code></td>
+<td><code><span class='Value'>•file.</span><span class='Function'>Chars</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>•FLines</span></code></td>
+<td><code><span class='Value'>•file.</span><span class='Function'>Lines</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>•FBytes</span></code></td>
+<td><code><span class='Value'>•file.</span><span class='Function'>Bytes</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="open-file-object"><a class="header" href="#open-file-object">Open file object</a></h3>
+<p>Not yet specified.</p>
+<h2 id="input-and-output"><a class="header" href="#input-and-output">Input and output</a></h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Function'>•Out</span></code></td>
+<td>Print argument string</td>
+</tr>
+<tr>
+<td><code><span class='Function'>•Show</span></code></td>
+<td>Print argument value</td>
+</tr>
+<tr>
+<td><code><span class='Function'>•Repr</span></code></td>
+<td>String representation of <code><span class='Value'>𝕩</span></code>, if possible</td>
+</tr>
+<tr>
+<td><code><span class='Function'>•Fmt</span></code></td>
+<td>Format value for printing</td>
+</tr>
+<tr>
+<td><code><span class='Function'>•ParseFloat</span></code></td>
+<td>Convert from string to floating point number</td>
+</tr>
+</tbody>
+</table>
+<p><code><span class='Function'>•Out</span></code> prints a string to stdout, with a trailing newline. <code><span class='Function'>•Show</span></code> displays a BQN value to the programmer (the representation is not specified, and does not need to be plain text). <code><span class='Function'>•Fmt</span></code> returns a string (not a character table: lines are separated by linefeeds) indicating how <code><span class='Value'>𝕩</span></code> would be printed by the interactive environment. Both <code><span class='Function'>•Show</span></code> and <code><span class='Function'>•Fmt</span></code> may take a left argument configuring how the value should be formatted.</p>
+<p><code><span class='Function'>•Repr</span></code> attempts to return a string so that <code><span class='Function'>•BQN</span> <span class='Function'>•Repr</span> <span class='Value'>𝕩</span></code> matches <code><span class='Value'>𝕩</span></code>. If <code><span class='Value'>𝕩</span></code> contains any mutable values (operations or namespaces), this is not possible. However, if such a values is stateless, in the sense that they don't access variables outside of their own scopes, it is permissible for <code><span class='Function'>•Repr</span></code> to return source code that would create a value with identical behavior.</p>
+<p><code><span class='Function'>•ParseFloat</span></code> returns the numeric value given by a string <code><span class='Value'>𝕩</span></code> in integer, decimal, or scientific notation. The whole of <code><span class='Value'>𝕩</span></code> must match the regular expression <code><span class='Function'>-</span><span class='Head'>?</span><span class='Paren'>(</span><span class='Value'>\.</span><span class='Bracket'>[</span><span class='Number'>0</span><span class='Function'>-</span><span class='Number'>9</span><span class='Bracket'>]</span><span class='Function'>+|</span><span class='Bracket'>[</span><span class='Number'>0</span><span class='Function'>-</span><span class='Number'>9</span><span class='Bracket'>]</span><span class='Function'>+</span><span class='Value'>\.</span><span class='Head'>?</span><span class='Bracket'>[</span><span class='Number'>0</span><span class='Function'>-</span><span class='Number'>9</span><span class='Bracket'>]</span><span class='Value'>*</span><span class='Paren'>)(</span><span class='Bracket'>[</span><span class='Value'>eE</span><span class='Bracket'>][</span><span class='Function'>-+</span><span class='Bracket'>]</span><span class='Head'>?</span><span class='Bracket'>[</span><span class='Number'>0</span><span class='Function'>-</span><span class='Number'>9</span><span class='Bracket'>]</span><span class='Function'>+</span><span class='Paren'>)</span><span class='Head'>?</span></code> or an error is given. This format is similar to BQN's numeric literals but with many differences. Only <code><span class='Function'>-</span></code> (not <code><span class='Number'>¯</span></code>) can be used for a negative sign, and a positive exponent may be optionally preceded by <code><span class='Function'>+</span></code>. A dot <code><span class='Value'>.</span></code> indicates the decimal regardless of locale, and digits can be absent either before or after it, but not both. The function should make an effort to return the nearest possible value to the exact one represented, but is not required to round perfectly in all cases.</p>
+<h3 id="terminal-io"><a class="header" href="#terminal-io">Terminal I/O</a></h3>
+<p>The system namespace <code><span class='Value'>•term</span></code> gives fine-grained control of input and output when running in a terminal emulator or similar text-based interface.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Function'>Flush</span></code></td>
+<td>Flush output buffer</td>
+</tr>
+<tr>
+<td><code><span class='Function'>RawMode</span></code></td>
+<td>Set raw mode (no input processing) if <code><span class='Number'>1</span></code>, unset if <code><span class='Number'>0</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>CharB</span></code></td>
+<td>Read a character, blocking until one is available</td>
+</tr>
+<tr>
+<td><code><span class='Function'>CharN</span></code></td>
+<td>Read a character if available but return <code><span class='Number'>0</span></code> if not</td>
+</tr>
+</tbody>
+</table>
+<h2 id="interface"><a class="header" href="#interface">Interface</a></h2>
+<p>The function <code><span class='Function'>•SH</span></code> allows BQN to call other programs, as an operating system shell would. <code><span class='Function'>•FFI</span></code> allows it to call functions compiled by C or compatible languages—these are stored in files that traditionally have names like <code><span class='Value'>lib*.so</span></code> in Unix. In both cases the callee can run unrestricted code, so only trusted programs and functions should be called this way.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Function'>•SH</span></code></td>
+<td>Execute shell command and return <code><span class='Value'>exitcode</span><span class='Ligature'>‿</span><span class='Value'>stdout</span><span class='Ligature'>‿</span><span class='Value'>stderr</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>•FFI</span></code></td>
+<td>Load a native function from a shared object file</td>
+</tr>
+</tbody>
+</table>
+<p>The argument to <code><span class='Function'>•SH</span></code> is a list of strings giving the command and its arguments (for example <code><span class='String'>&quot;mv&quot;</span><span class='Ligature'>‿</span><span class='String'>&quot;old&quot;</span><span class='Ligature'>‿</span><span class='String'>&quot;new&quot;</span></code>). The command is executed synchronously, and the result is a list of three elements: the command's exit code, text written to stdout, and text written to stderr. In both cases the text is a plain string containing all text emitted by the program. Text is interpreted as UTF-8, with an error if it's not valid UTF-8.</p>
+<p>The arguments to <code><span class='Function'>•FFI</span></code> are a file path for <code><span class='Value'>𝕨</span></code> (interpreted relative to <code><span class='Value'>•path</span></code> if necessary, like <code><span class='Value'>•file</span></code> functions), and a function descriptor for <code><span class='Value'>𝕩</span></code>, which gives the function name, argument and result types, and information about how to convert these values. The format of <code><span class='Value'>𝕩</span></code> is described in the next section. The result is a BQN function that calls the specified function. This call can crash, mutate values, or invoke other unexpected behavior if the function interferes with memory used by BQN.</p>
+<h3 id="foreign-function-interface-ffi"><a class="header" href="#foreign-function-interface-ffi">Foreign Function Interface (FFI)</a></h3>
+<p>In a call to <code><span class='Function'>•FFI</span></code>, <code><span class='Value'>𝕩</span></code> follows the pattern <code><span class='String'>&quot;result&quot;</span><span class='Ligature'>‿</span><span class='String'>&quot;fn&quot;</span><span class='Ligature'>‿</span><span class='String'>&quot;arg0&quot;</span><span class='Ligature'>‿</span><span class='String'>&quot;arg1&quot;</span><span class='Ligature'>‿</span><span class='Value'>...</span></code>, that is, a string for the <em>result type</em>, one for the <em>function name</em>, and any number of strings indicating <em>argument types</em>. <code><span class='Value'>𝕩</span></code> must always be a list.</p>
+<p>The function name is an arbitrary string. In order to look up the appropriate function in shared object file <code><span class='Value'>𝕨</span></code>, it's encoded as UTF-8.</p>
+<p>Types are to be interpreted according to the C ABI appropriate for the platform used. The grammar for a result or argument type is given below, using BNF as in the BQN grammar. Quoted values here are single characters: the type isn't tokenized and can't contain spaces. A <code><span class='Function'>•FFI</span></code> implementation does not need to support all combinations of types.</p>
+<pre><span class='Value'>conv</span>  <span class='Function'>=</span> <span class='Value'>type</span> <span class='Paren'>(</span> <span class='String'>&quot;:&quot;</span> <span class='Value'>bqn</span> <span class='Paren'>)</span><span class='Head'>?</span>
+<span class='Value'>type</span>  <span class='Function'>=</span> <span class='Paren'>(</span> <span class='String'>&quot;i&quot;</span> <span class='Function'>|</span> <span class='String'>&quot;u&quot;</span> <span class='Function'>|</span> <span class='String'>&quot;f&quot;</span> <span class='Paren'>)</span> <span class='Value'>nat</span>          <span class='Comment'># number
+</span>      <span class='Function'>|</span> <span class='String'>&quot;a&quot;</span>                              <span class='Comment'># BQN object
+</span>      <span class='Function'>|</span> <span class='Paren'>(</span> <span class='String'>&quot;*&quot;</span> <span class='Function'>|</span> <span class='String'>&quot;&amp;&quot;</span> <span class='Paren'>)</span> <span class='Value'>type</span><span class='Head'>?</span>              <span class='Comment'># pointer
+</span>      <span class='Function'>|</span> <span class='String'>&quot;[&quot;</span> <span class='Value'>nat</span> <span class='String'>&quot;]&quot;</span> <span class='Value'>type</span>                 <span class='Comment'># array
+</span>      <span class='Function'>|</span> <span class='String'>&quot;{&quot;</span> <span class='Paren'>(</span> <span class='Value'>conv</span> <span class='Paren'>(</span> <span class='String'>&quot;,&quot;</span> <span class='Value'>conv</span> <span class='Paren'>)</span><span class='Value'>*</span> <span class='Paren'>)</span><span class='Head'>?</span> <span class='String'>&quot;}&quot;</span>  <span class='Comment'># struct
+</span><span class='Value'>bqn</span>   <span class='Function'>=</span> <span class='Paren'>(</span> <span class='String'>&quot;i&quot;</span> <span class='Function'>|</span> <span class='String'>&quot;u&quot;</span> <span class='Function'>|</span> <span class='String'>&quot;f&quot;</span> <span class='Function'>|</span> <span class='String'>&quot;c&quot;</span> <span class='Paren'>)</span> <span class='Value'>nat</span>
+
+<span class='Value'>nat</span>   <span class='Function'>=</span> <span class='Value'>digit</span><span class='Function'>+</span>
+<span class='Value'>digit</span> <span class='Function'>=</span> <span class='String'>&quot;0&quot;</span> <span class='Function'>|</span> <span class='String'>&quot;1&quot;</span> <span class='Function'>|</span> <span class='String'>&quot;2&quot;</span> <span class='Function'>|</span> <span class='String'>&quot;3&quot;</span> <span class='Function'>|</span> <span class='String'>&quot;4&quot;</span> <span class='Function'>|</span> <span class='String'>&quot;5&quot;</span> <span class='Function'>|</span> <span class='String'>&quot;6&quot;</span> <span class='Function'>|</span> <span class='String'>&quot;7&quot;</span> <span class='Function'>|</span> <span class='String'>&quot;8&quot;</span> <span class='Function'>|</span> <span class='String'>&quot;9&quot;</span>
+</pre>
+<p>By default, the returned function takes a list of arguments <code><span class='Value'>𝕩</span></code>, requires <code><span class='Value'>𝕨</span></code> to be an empty list if present, and returns a value corresponding to the C result. Some argument-specific rules can change this:</p>
+<ul>
+<li>The result type may also be the empty string <code><span class='String'>&quot;&quot;</span></code>, indicating a void or ignored result, or <code><span class='String'>&quot;&amp;&quot;</span></code>, indicating an ignored result, using a mutable argument for the BQN result, as discussed below. It can't contain any instance of the pointer rule <code><span class='Paren'>(</span> <span class='String'>&quot;*&quot;</span> <span class='Function'>|</span> <span class='String'>&quot;&amp;&quot;</span> <span class='Paren'>)</span> <span class='Value'>type</span></code>.</li>
+<li>An argument type may be preceded by up to one <code><span class='Function'>&gt;</span></code>, and up to one <code><span class='Value'>𝕨</span></code> or <code><span class='Value'>𝕩</span></code>, in any order. Arguments with <code><span class='Value'>𝕨</span></code> are taken from <code><span class='Value'>𝕨</span></code> in order, and the others from <code><span class='Value'>𝕩</span></code>. If no arguments come from <code><span class='Value'>𝕨</span></code>, the BQN function may be called monadically. If an argument type contains <code><span class='Function'>&gt;</span></code>, it must be the only value in its BQN argument (<code><span class='Value'>𝕨</span></code> or <code><span class='Value'>𝕩</span></code>), and that argument will be treated not as a list but as an entire value.</li>
+</ul>
+<p>Beginning with the type declarations themselves, a <strong>number</strong> such as <code><span class='Value'>f32</span></code> corresponds to a C type with the given quality (<code><span class='Value'>i</span></code> for signed integer, <code><span class='Value'>u</span></code> for unsigned, <code><span class='Value'>f</span></code> for floating-point) and width in bits. The corresponding BQN value is a number, and should be converted exactly for integers and with rounding for decreasing-type conversions. For conversions to or from an integer type, attempting to convert a value to a type that can't contain it, or one outside of the exactly representable integer range (<code><span class='Function'>-</span><span class='Number'>2</span><span class='Function'>⋆</span><span class='Number'>53</span></code> to <code><span class='Number'>2</span><span class='Function'>⋆</span><span class='Number'>53</span></code> for IEEE doubles), results in an error.</p>
+<p>A <strong>pointer</strong> such as <code><span class='Value'>*u8</span></code> comes from a BQN list (or a pointer object, as discussed in the next paragraph). If the symbol <code><span class='Value'>&amp;</span></code> is used rather than <code><span class='Value'>*</span></code>, the pointer is called <strong>mutable</strong> and its contents after the function call completes are also returned as an element of the result. If there is any mutable pointer, the result is a list, unless the result type is <code><span class='String'>&quot;&amp;&quot;</span></code>, in which case there must be exactly one mutable pointer and the result is its value alone. These prefixes can only be used in arguments, meaning that a BQN value is provided, and this value determines the length of both the input and the mutable result.</p>
+<p>When the result contains a pointer type, that value will be returned as a new <a href="#pointer-objects">pointer object</a> with the given type. Furthermore, a pointer in an argument accepts a pointer object whose element type is compatible with the specified one. Types are compared recursively for compatibility: they're compatible if all contained types (such as fields of a struct) are compatible, and all other aspects (such as array length) are identical, or if one is an untyped pointer <code><span class='Value'>*</span></code> and the other is any pointer. This means a bare pointer type <code><span class='Value'>*</span></code> or <code><span class='Value'>&amp;</span></code> can't accept a list, but allows any pointer. When used with <code><span class='Value'>&amp;</span></code>, the object is included in the result unchanged.</p>
+<p>The letter <code><span class='Value'>a</span></code> indicates that a <strong>BQN value</strong> is to be passed directly, interpreted in whatever way makes sense for the implementation. The <strong>array</strong> and <strong>struct</strong> types indicate C structs and arrays, and correspond to BQN lists.</p>
+<p>The <code><span class='Value'>bqn</span></code> value in a <code><span class='Value'>conv</span></code> term indicates a BQN element type to be used. It can be appear after the whole type, or any member of a struct, and applies to the final component (that is, <code><span class='Value'>type</span></code> term) of the type <em>and</em> one preceding <code><span class='Value'>*</span></code>, <code><span class='Value'>&amp;</span></code>, or <code><span class='Bracket'>[</span><span class='Value'>n</span><span class='Bracket'>]</span></code> if present (if a type ends in <code><span class='Value'>**</span></code>, it applies to both <code><span class='Value'>*</span></code>s). This portion of the type corresponds to a BQN list of the given element type, interpreted much like <a href="#bitwise-operations">bitwise</a> conversion <code><span class='Value'>•bit.</span><span class='Modifier'>_cast</span></code>. The C type is treated as pure data, a stream of bits. For a prefix <code><span class='Value'>*</span></code> or <code><span class='Value'>&amp;</span></code>, the data in question is the region of memory pointed to.</p>
+<h3 id="pointer-objects"><a class="header" href="#pointer-objects">Pointer objects</a></h3>
+<p>A pointer object encapsulates a pointer into memory, and can be used in FFI functions. It is either untyped (represented by an empty type string <code><span class='String'>&quot;&quot;</span></code>), or has an element type and a stride in bytes.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Function'>Read</span></code></td>
+<td>Read value at offset <code><span class='Value'>𝕩</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>Write</span></code></td>
+<td>Write value <code><span class='Value'>𝕩</span></code> at offset <code><span class='Value'>𝕨</span><span class='Function'>⊣</span><span class='Number'>0</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>Add</span></code></td>
+<td>Return a new pointer offset by <code><span class='Value'>𝕩</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>Sub</span></code></td>
+<td>Offset by <code><span class='Function'>-</span><span class='Value'>𝕩</span></code>, or return the offset from <code><span class='Value'>𝕩</span></code> to this pointer</td>
+</tr>
+<tr>
+<td><code><span class='Function'>Cast</span></code></td>
+<td>Return a new pointer to the same location with type <code><span class='Value'>𝕩</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>Field</span></code></td>
+<td>Return a new pointer to field number <code><span class='Value'>𝕩</span></code>, maintaining stride</td>
+</tr>
+</tbody>
+</table>
+<p>An untyped pointer gives an error on any <code><span class='Function'>Read</span></code>, <code><span class='Function'>Write</span></code>, <code><span class='Function'>Add</span></code>, or <code><span class='Function'>Sub</span></code>. Offsets must be integers, and are multiplied by the pointer stride, giving a displacement in bytes, in order to add it to the location. A BQN value to be written is converted in the same way as an FFI argument of the pointer's element type, and a value to be read is converted like an FFI result. This relies on the C ABI for layout details, and could be modelled as an FFI interface to a C function that writes to, or reads from, a pointer.</p>
+<p><code><span class='Function'>Add</span></code> and <code><span class='Function'>Sub</span></code>, with an integer argument, return a new pointer, maintaining the argument type and stride. When the argument to <code><span class='Function'>Sub</span></code> is a pointer, it must be typed, and the two pointers must have compatible types and the same stride. The result is the difference in bytes between the pointers, divided by the common stride. If the difference wasn't an even multiple of the stride, <code><span class='Function'>Sub</span></code> gives an error.</p>
+<p>The argument to <code><span class='Function'>Cast</span></code> is an element type, or <code><span class='String'>&quot;&quot;</span></code>, and the result is accordingly a typed or untyped pointer. If typed, the returned pointer's stride is the width of its element type; that is, the original pointer's stride is ignored.</p>
+<p><code><span class='Function'>Field</span></code> gives an error unless the pointer's element type is a struct or array. It must be a natural number less than the length of that type. The result is a pointer that points to the field with that index, with the type of that field and the stride of the original pointer.</p>
+<h2 id="platform"><a class="header" href="#platform">Platform</a></h2>
+<p>The platform is the set of mechanisms responsible for evaluating the current instance of BQN, including CPU, operating system, host language, and the BQN implementation itself, when applicable. System namespace <code><span class='Value'>•platform</span></code> contains information about it.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Value'>os</span></code></td>
+<td>Operating system: &quot;linux&quot;, &quot;windows&quot;</td>
+</tr>
+<tr>
+<td><code><span class='Value'>environment</span></code></td>
+<td>What evaluates the implementation: &quot;native&quot;, &quot;wasm&quot;, &quot;jvm&quot;</td>
+</tr>
+<tr>
+<td><code><span class='Value'>cpu.arch</span></code></td>
+<td>Instruction set architecture of the CPU: &quot;x86-64&quot;, &quot;aarch64&quot;</td>
+</tr>
+<tr>
+<td><code><span class='Value'>bqn.impl</span></code></td>
+<td>Name of the BQN implementation: &quot;CBQN&quot;, &quot;JS BQN&quot;</td>
+</tr>
+<tr>
+<td><code><span class='Value'>bqn.implVersion</span></code></td>
+<td>Implementation-specific version numbering</td>
+</tr>
+</tbody>
+</table>
+<p><code><span class='Value'>os</span></code>, <code><span class='Value'>environment</span></code>, and <code><span class='Value'>cpu.arch</span></code> are reported in all lowercase. The value <code><span class='String'>&quot;unknown&quot;</span></code> is used if that aspect of the platform can't be determined, and <code><span class='String'>&quot;none&quot;</span></code> if it's not present.</p>
+<p>The operating system is the tool that manages system resources such as processes, files, and devices. When there are multiple OS layers, for example when using a VM or compatibility layer, the one that directly interfaces with BQN (the lowest or &quot;most virtual&quot;) should be chosen.</p>
+<p>The environment is the system that evaluates the BQN implementation, generally either the hardware itself (&quot;native&quot;) or a language runtime such as Javascript, the JVM, WebAssembly (Wasm), or Julia.</p>
+<p>Namespace <code><span class='Value'>•platform.cpu</span></code> reports CPU information, with <code><span class='Value'>arch</span></code> giving its base instruction set architecture. When run on an emulated CPU the emulated architecture may be reported, that is, native-compiled BQN implementations may simply report their compilation target.</p>
+<p>Namespace <code><span class='Value'>•platform.bqn</span></code> reports information about the implementation of BQN in use. The format of its name and version numbering can be freely chosen by the implementation. Taken together, these should uniquely identify the source code of the running implementation if possible.</p>
+<h2 id="operation-properties"><a class="header" href="#operation-properties">Operation properties</a></h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Function'>•Type</span></code></td>
+<td>Return a number indicating type</td>
+</tr>
+<tr>
+<td><code><span class='Function'>•Glyph</span></code></td>
+<td>Return the glyph for a primitive</td>
+</tr>
+<tr>
+<td><code><span class='Function'>•Source</span></code></td>
+<td>Return the source of a block, as a string</td>
+</tr>
+<tr>
+<td><code><span class='Function'>•Decompose</span></code></td>
+<td>Show the parts of a compound function</td>
+</tr>
+</tbody>
+</table>
+<p>Each function in this section is monadic.</p>
+<p><code><span class='Function'>•Type</span></code> gives its argument's type, as a number from the table below:</p>
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Array</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Number</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Character</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Function</td>
+</tr>
+<tr>
+<td>4</td>
+<td>1-modifier</td>
+</tr>
+<tr>
+<td>5</td>
+<td>2-modifier</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Namespace</td>
+</tr>
+</tbody>
+</table>
+<p><code><span class='Function'>•Glyph</span></code> gives the glyph corresponding to a primitive as a single character, for example returning <code><span class='String'>'+'</span></code> given an argument matching <code><span class='Function'>+</span></code>. It causes an error if the argument is not a primitive.</p>
+<p><code><span class='Function'>•Source</span></code> gives a string containing a block's source, including the enclosing braces <code><span class='Brace'>{}</span></code>. It causes an error if the argument is not a block. In contrast to <code><span class='Function'>•Glyph</span></code>, this function does not give full information about <code><span class='Value'>𝕩</span></code> because the result cannot convey environment or mutable identity.</p>
+<p><code><span class='Function'>•Decompose</span></code> breaks down one level of a compound function, returning a list with a code giving what kind of structure it has followed by each of its components. Possible codes are listed in the table below according to the rule that forms the function—train or modifier application. Non-function values, and some functions, can't be broken down. They are still classified with a code: -1 for a non-operation, 0 for a primitive, and 1 for other operations. &quot;Other&quot; includes blocks and system operations. The result is thus a list of length 2 to 4, and <code><span class='Function'>•Decompose</span></code> cannot cause an error.</p>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>Code</th>
+<th>Components</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Non-operation</td>
+<td>-1</td>
+<td><code><span class='Value'>𝕩</span></code></td>
+</tr>
+<tr>
+<td>Primitive</td>
+<td>0</td>
+<td><code><span class='Value'>𝕩</span></code></td>
+</tr>
+<tr>
+<td>Other</td>
+<td>1</td>
+<td><code><span class='Value'>𝕩</span></code></td>
+</tr>
+<tr>
+<td>2-train</td>
+<td>2</td>
+<td><code>  <span class='Value'>g</span><span class='Separator'>,</span><span class='Value'>h</span></code></td>
+</tr>
+<tr>
+<td>3-train</td>
+<td>3</td>
+<td><code><span class='Value'>f</span><span class='Separator'>,</span><span class='Value'>g</span><span class='Separator'>,</span><span class='Value'>h</span></code></td>
+</tr>
+<tr>
+<td>1-mod</td>
+<td>4</td>
+<td><code><span class='Value'>𝕗</span><span class='Separator'>,</span><span class='Value'>𝕣</span></code></td>
+</tr>
+<tr>
+<td>2-mod</td>
+<td>5</td>
+<td><code><span class='Value'>𝕗</span><span class='Separator'>,</span><span class='Value'>𝕣</span><span class='Separator'>,</span><span class='Value'>𝕘</span></code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="namespaces"><a class="header" href="#namespaces">Namespaces</a></h2>
+<p>The system namespace <code><span class='Value'>•ns</span></code> contains functionality for working with namespaces.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Function'>Keys</span></code></td>
+<td>List of normalized field names in <code><span class='Value'>𝕩</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>Has</span></code></td>
+<td><code><span class='Number'>1</span></code> if <code><span class='Value'>𝕨</span></code> contains a field named <code><span class='Value'>𝕩</span></code> and <code><span class='Number'>0</span></code> otherwise</td>
+</tr>
+<tr>
+<td><code><span class='Function'>Get</span></code></td>
+<td>Current value in <code><span class='Value'>𝕨</span></code> of the field named <code><span class='Value'>𝕩</span></code></td>
+</tr>
+</tbody>
+</table>
+<p><code><span class='Function'>Keys</span></code> returns field names as strings, normalized in the sense that all underscores are removed and alphabetic characters are converted to lowercase. The order of the names is unspecified. <code><span class='Function'>Has</span></code> and <code><span class='Function'>Get</span></code> accept names with any spelling. <code><span class='Function'>Get</span></code> causes an error if <code><span class='Value'>𝕩</span></code> isn't the name of a field of <code><span class='Value'>𝕨</span></code>, while <code><span class='Function'>Has</span></code> causes an error only if it isn't a string, returning <code><span class='Number'>0</span></code> for any string that isn't a valid name.</p>
+<h2 id="data-structures"><a class="header" href="#data-structures">Data structures</a></h2>
+<p>The system function <code><span class='Function'>•HashMap</span></code> creates a mutable object from the list of initial keys <code><span class='Value'>𝕨</span></code> and values <code><span class='Value'>𝕩</span></code> that maintains an association mapping keys to values. It has the following fields:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Function'>Count</span></code></td>
+<td>return the number of keys present</td>
+</tr>
+<tr>
+<td><code><span class='Function'>Keys</span></code></td>
+<td>return all keys as a list in the order they were set</td>
+</tr>
+<tr>
+<td><code><span class='Function'>Values</span></code></td>
+<td>return all values corresponding to the keys</td>
+</tr>
+<tr>
+<td><code><span class='Function'>Has</span></code></td>
+<td>return <code><span class='Number'>1</span></code> if key <code><span class='Value'>𝕩</span></code> is present and <code><span class='Number'>0</span></code> otherwise</td>
+</tr>
+<tr>
+<td><code><span class='Function'>Get</span></code></td>
+<td>return value for key <code><span class='Value'>𝕩</span></code>, and <code><span class='Value'>𝕨</span></code> or error if not found</td>
+</tr>
+<tr>
+<td><code><span class='Function'>Set</span></code></td>
+<td>set value for key <code><span class='Value'>𝕨</span></code> to <code><span class='Value'>𝕩</span></code>, possibly replacing an existing value</td>
+</tr>
+<tr>
+<td><code><span class='Function'>Delete</span></code></td>
+<td>remove the entry for key <code><span class='Value'>𝕩</span></code></td>
+</tr>
+</tbody>
+</table>
+<p>Fields <code><span class='Function'>Count</span></code>, <code><span class='Function'>Keys</span></code>, and <code><span class='Function'>Values</span></code> take one argument and ignore it. <code><span class='Function'>Set</span></code> and <code><span class='Function'>Delete</span></code> return the map object itself.</p>
+<p>Any BQN value can be used as a key, and two keys are considered the same if they match (as in <code><span class='Function'>≡</span></code>). The initial key list <code><span class='Value'>𝕨</span></code> passed to <code><span class='Function'>•HashMap</span></code> can't contain duplicates, that is, the function errors if <code><span class='Function'>¬∧</span><span class='Modifier'>´</span><span class='Function'>∊</span><span class='Value'>𝕨</span></code>. This key list defines the initial ordering used by <code><span class='Function'>Keys</span></code>, which may then be modified by <code><span class='Function'>Set</span></code> and <code><span class='Function'>Delete</span></code>. When <code><span class='Function'>Set</span></code> adds a key that's not currently present, that key is added to the end of the ordering. When <code><span class='Function'>Delete</span></code> removes a key, it's removed from the ordering, and will be added to the end if set again.</p>
+<h2 id="time"><a class="header" href="#time">Time</a></h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Function'>•UnixTime</span></code></td>
+<td>Time between Unix epoch and function call</td>
+</tr>
+<tr>
+<td><code><span class='Function'>•MonoTime</span></code></td>
+<td>Monotonically-increasing time counter for relative measurement</td>
+</tr>
+<tr>
+<td><code><span class='Function'>•Delay</span></code></td>
+<td>Wait at least <code><span class='Value'>𝕩</span></code> seconds, and return the actual wait time</td>
+</tr>
+<tr>
+<td><code><span class='Modifier'>•_timed</span></code></td>
+<td>Call <code><span class='Function'>𝔽</span></code> on <code><span class='Value'>𝕩</span></code> <code><span class='Value'>𝕨</span><span class='Function'>⊣</span><span class='Number'>1</span></code> times, and return the average duration</td>
+</tr>
+<tr>
+<td><code><span class='Modifier2'>•_maxTime_</span></code></td>
+<td>Call <code><span class='Function'>𝔽</span></code> on the arguments, but fail if it takes over <code><span class='Value'>𝕨</span><span class='Function'>𝔾</span><span class='Value'>𝕩</span></code> seconds</td>
+</tr>
+</tbody>
+</table>
+<p>All times are measured in seconds.</p>
+<p>The <a href="https://en.wikipedia.org/wiki/Unix_time">Unix epoch</a> is 1970-01-01 00:00:00 UTC, and <a href="https://en.wikipedia.org/wiki/Unix_time">Unix time</a> is the number of seconds since this epoch, with adjustments for leap seconds. <code><span class='Function'>•UnixTime</span></code> is intended for absolute time measurement and should use the source most accurate reflects Unix time when it's called. <code><span class='Function'>•MonoTime</span></code> is intended for relative measurement and should use the method that gives the most precise time differences over the course of the program. Its return value must never decrease between calls.</p>
+<p><code><span class='Modifier'>•_timed</span></code> returns the total time taken divided by the number of function calls (<code><span class='Value'>𝕨</span></code> if provided and 1 otherwise), including the overhead required for the outer loop that counts iterations (which will typically be negligible in comparison to the BQN code).</p>
+<p>More accurately the modifier <code><span class='Modifier2'>•_maxTime_</span></code> <em>may</em> fail if execution of <code><span class='Function'>𝔽</span></code> takes over <code><span class='Value'>𝕨</span><span class='Function'>𝔾</span><span class='Value'>𝕩</span></code> seconds, and should fail as quickly as it is practically able to. The most likely way to implement this modifier is to interrupt execution at the given time. If <code><span class='Function'>𝔽</span></code> completes before the interrupt there is no need to measure the amount of time it actually took.</p>
+<h2 id="math"><a class="header" href="#math">Math</a></h2>
+<p>System namespace <code><span class='Value'>•math</span></code> contains mathematical utilities that are not easily implemented with basic arithmetic, analogous to C's <code><span class='Value'>math.h</span></code>.</p>
+<p>Correctly-rounded arithmetic functions: monadic <code><span class='Function'>Cbrt</span><span class='Gets'>⇐</span><span class='Number'>3</span><span class='Modifier2'>⊸</span><span class='Function'>√</span></code>, <code><span class='Function'>Log2</span><span class='Gets'>⇐</span><span class='Number'>2</span><span class='Function'>⋆</span><span class='Modifier'>⁼</span><span class='Function'>⊢</span></code>, <code><span class='Function'>Log10</span><span class='Gets'>⇐</span><span class='Number'>10</span><span class='Function'>⋆</span><span class='Modifier'>⁼</span><span class='Function'>⊢</span></code>, <code><span class='Function'>Log1p</span><span class='Gets'>⇐</span><span class='Function'>⋆</span><span class='Modifier'>⁼</span><span class='Number'>1</span><span class='Modifier2'>⊸</span><span class='Function'>+</span></code>, <code><span class='Function'>Expm1</span><span class='Gets'>⇐</span><span class='Number'>1</span><span class='Function'>-</span><span class='Modifier'>˜</span><span class='Function'>⋆</span></code>; dyadic <code><span class='Function'>Hypot</span><span class='Gets'>⇐</span><span class='Function'>+</span><span class='Modifier2'>⌾</span><span class='Paren'>(</span><span class='Function'>×</span><span class='Modifier'>˜</span><span class='Paren'>)</span></code>.</p>
+<p>Standard trigonometric functions <code><span class='Function'>Sin</span></code>, <code><span class='Function'>Cos</span></code>, <code><span class='Function'>Tan</span></code>, <code><span class='Function'>Sinh</span></code>, <code><span class='Function'>Cosh</span></code>, <code><span class='Function'>Tanh</span></code>, with inverses preceded by <code><span class='Value'>a</span></code> (<code><span class='Function'>ASin</span></code>, etc.) and accessable with <code><span class='Modifier'>⁼</span></code>. Additionally, the dyadic function <code><span class='Function'>ATan2</span></code> giving the angle of vector <code><span class='Value'>𝕨</span><span class='Ligature'>‿</span><span class='Value'>𝕩</span></code> relative to <code><span class='Number'>1</span><span class='Ligature'>‿</span><span class='Number'>0</span></code>. All trig functions measure angles in radians.</p>
+<p>Special functions <code><span class='Function'>Fact</span></code> and <code><span class='Function'>LogFact</span></code> giving the factorial and its natural logarithm, possibly generalized to reals as the gamma function Γ(1+𝕩), and <code><span class='Function'>Comb</span></code> giving the binomial function &quot;<code><span class='Value'>𝕨</span></code> choose <code><span class='Value'>𝕩</span></code>&quot;. Also the error function <code><span class='Function'>Erf</span></code> and its complement <code><span class='Function'>ErfC</span></code>. The implementations <code><span class='Function'>LogFact</span> <span class='Gets'>←</span> <span class='Function'>⋆</span><span class='Modifier'>⁼</span><span class='Function'>Fact</span></code> and <code><span class='Function'>ErfC</span> <span class='Gets'>←</span> <span class='Number'>1</span><span class='Function'>-Erf</span></code> are mathematically correct but these two functions should support greater precision for a large argument.</p>
+<p>The greatest common divison <code><span class='Function'>GCD</span></code> and least common multiple <code><span class='Function'>LCM</span></code> of two numbers. Behavior for arguments other than natural numbers is not yet specified.</p>
+<h2 id="random-generation"><a class="header" href="#random-generation">Random generation</a></h2>
+<p><code><span class='Function'>•MakeRand</span></code> initializes a deterministic pseudorandom number generator with seed value <code><span class='Value'>𝕩</span></code>. <code><span class='Value'>•rand</span></code>, if it exists, is a globally accessible generator initialized at first use; this initialization should use randomness from an outside source if available. These random generators aren't required to be cryptographically secure and should always be treated as insecure. A random generator has the following member functions:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Function'>Range</span></code></td>
+<td>A number, or array of shape <code><span class='Value'>𝕨</span></code>, selected from <code><span class='Function'>↕</span><span class='Value'>𝕩</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>Deal</span></code></td>
+<td>A simple random sample of <code><span class='Value'>𝕨</span><span class='Function'>⊣</span><span class='Value'>𝕩</span></code> elements of <code><span class='Function'>↕</span><span class='Value'>𝕩</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Function'>Subset</span></code></td>
+<td>A sorted SRS of <code><span class='Function'>↕</span><span class='Value'>𝕩</span></code>, with <code><span class='Value'>𝕨</span></code> elements if given</td>
+</tr>
+</tbody>
+</table>
+<p>For each of these functions, <code><span class='Value'>𝕩</span></code> is a natural number. For <code><span class='Function'>Range</span></code>, <code><span class='Value'>𝕨</span></code> must be a valid shape (natural number, or list or unit array of natural numbers) if given, and for <code><span class='Function'>Deal</span></code> and <code><span class='Function'>Subset</span></code> it's a natural number less than or equal to <code><span class='Value'>𝕩</span></code>. All selections are made uniformly at random, that is, each possible result is equally likely. A simple random sample (SRS) of <code><span class='Value'>k</span></code> elements from list <code><span class='Value'>s</span></code> is a list of <code><span class='Value'>k</span></code> distinct elements of <code><span class='Value'>s</span></code> in any order. Both the choice of elements and their ordering must be uniformly random. <a href="../implementation/primitive/random.html#simple-random-sample">Recommended algorithms</a> for SRS selection are variants of a partial Knuth shuffle.</p>
+<p>When <code><span class='Value'>𝕨</span></code> isn't given, <code><span class='Function'>Deal</span></code>'s result contains all elements of <code><span class='Function'>↕</span><span class='Value'>𝕩</span></code>, making it a random shuffle of those values, or random permutation. In <code><span class='Function'>Subset</span></code>, a random choice is made uniformly from the <code><span class='Number'>2</span><span class='Function'>⋆</span><span class='Value'>𝕩</span></code> subsets of <code><span class='Function'>↕</span><span class='Value'>𝕩</span></code>, so that a subset of any length may be returned.</p>
+<p>In <code><span class='Function'>Range</span></code>, <code><span class='Value'>𝕩</span></code> may be <code><span class='Number'>0</span></code>. In this case the result consists of floating-point numbers in the unit interval from 0 to 1. The numbers should have an overall uniform distribution, but their precision and whether the endpoints 0 and 1 are possible may depend on the implementation.</p>
+<p>Ranges up to <code><span class='Number'>2</span><span class='Function'>⋆</span><span class='Number'>32</span></code> must be supported (that is, a maximum integer result of <code><span class='Paren'>(</span><span class='Number'>2</span><span class='Function'>⋆</span><span class='Number'>32</span><span class='Paren'>)</span><span class='Function'>-</span><span class='Number'>1</span></code>) if the number system accommodates it. In implementations based on double-precision floats it's preferable but not required to support ranges up to <code><span class='Number'>2</span><span class='Function'>⋆</span><span class='Number'>53</span></code>.</p>
+<h2 id="bitwise-operations"><a class="header" href="#bitwise-operations">Bitwise operations</a></h2>
+<p>The system namespace <code><span class='Value'>•bit</span></code> gives functions for efficiently applying bitwise and two's complement integer operations to arrays of data. These functions should compute result values with native CPU instructions, preferably SIMD if available.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Args</th>
+<th>Type</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code><span class='Modifier'>_not</span></code></td>
+<td>1</td>
+<td>bit</td>
+<td><code><span class='Function'>¬</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Modifier'>_and</span></code></td>
+<td>2</td>
+<td>bit</td>
+<td><code><span class='Function'>∧</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Modifier'>_or</span></code></td>
+<td>2</td>
+<td>bit</td>
+<td><code><span class='Function'>∨</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Modifier'>_xor</span></code></td>
+<td>2</td>
+<td>bit</td>
+<td><code><span class='Function'>≠</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Modifier'>_neg</span></code></td>
+<td>1</td>
+<td>integer</td>
+<td><code><span class='Function'>-</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Modifier'>_add</span></code></td>
+<td>2</td>
+<td>integer</td>
+<td><code><span class='Function'>+</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Modifier'>_sub</span></code></td>
+<td>2</td>
+<td>integer</td>
+<td><code><span class='Function'>-</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Modifier'>_mul</span></code></td>
+<td>2</td>
+<td>integer</td>
+<td><code><span class='Function'>×</span></code></td>
+</tr>
+<tr>
+<td><code><span class='Modifier'>_cast</span></code></td>
+<td>1</td>
+<td>any</td>
+<td>identity</td>
+</tr>
+</tbody>
+</table>
+<p>The <code><span class='Modifier'>_cast</span></code> modifier is special and not considered an operation; see below. Each operation is exposed as a 1-modifier that takes up to four numbers for its operand.</p>
+<ul>
+<li>Operation width</li>
+<li>Result element width</li>
+<li>Right argument element width</li>
+<li>Left argument element width</li>
+</ul>
+<p>The operand is extended to length 3 for monadic operations, and 4 for dyadic operations, by repeating the last element (like <code><span class='Function'>»</span><span class='Modifier2'>⟜</span><span class='Paren'>(</span><span class='Number'>4</span><span class='Function'>⥊⊢</span><span class='Modifier'>´</span><span class='Paren'>)</span></code>). It must be a number, or array of numbers with rank at most 1.</p>
+<p>An example call is <code><span class='Value'>a</span> <span class='Number'>16</span><span class='Ligature'>‿</span><span class='Number'>1</span><span class='Value'>•bit.</span><span class='Modifier'>_add</span> <span class='Value'>b</span></code>, to perform 16-bit additions on two boolean arrays with a boolean result.</p>
+<p>To apply a bitwise operation, each argument is represented as a stream of bits based on the width given for it, then split into units whose width is the operation width. The operation is applied to these units. The result is again treated as a stream of bits and split according to the result width, with each unit forming a result element.</p>
+<p>The operation width, along with the &quot;Type&quot; column above, determines what operation is performed. For bit operations it has no effect, except to constrain the argument sizes according to the shape rules below. Integer operations support widths of 8 and above, and should support higher values such as 128 if available. For all of them, there is no difference between wrapping signed and unsigned operations given that the argument and result widths are the same.</p>
+<p>Argument and result widths correspond to little-endian binary representations according to the following table (operation widths don't—see the &quot;type&quot; field in the table above). Here &quot;boolean&quot; indicates value 0 or 1, &quot;signed integer&quot; indicates two's complement representation, and &quot;character&quot; is a code point in an unsigned representation. Either type may be used for an argument, but the result will always use a primary type.</p>
+<table>
+<thead>
+<tr>
+<th>Width</th>
+<th>Primary type</th>
+<th>Also</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Boolean</td>
+<td></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Signed integer</td>
+<td>Character</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Signed integer</td>
+<td>Character</td>
+</tr>
+<tr>
+<td>32</td>
+<td>Signed integer</td>
+<td>Character</td>
+</tr>
+<tr>
+<td>64</td>
+<td>IEEE 754 double</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>An argument must be an array of numbers or an array of characters. Its elements must fit into the appropriate type. The &quot;cell size&quot; is the length in bits of a 1-cell, that is, <code><span class='Value'>width</span><span class='Function'>×</span><span class='Number'>¯1</span><span class='Function'>⊑</span><span class='Number'>1</span><span class='Function'>∾≢</span><span class='Value'>arg</span></code>, and must be a multiple of the operation width. The &quot;leading shape&quot; is <code><span class='Number'>¯1</span><span class='Function'>↓≢</span><span class='Value'>arg</span></code>. For two-argument functions one argument can be scalar-extended if it has rank 1 and cell size equal to the operation width. Otherwise both arguments must have the same cell size, and the same leading shape. The result shape is the leading shape of any non-extended argument followed by its cell size divided by the result element width. As a scalar-extended argument indicates a single operation input, it's reused every time the operation is applied.</p>
+<p>Another tool is provided for performing direct conversions, with no operation applied. The 1-modifier <code><span class='Value'>•bit.</span><span class='Modifier'>_cast</span></code> takes a two-element operand and one argument, for example <code><span class='Bracket'>⟨</span><span class='Number'>8</span><span class='Separator'>,</span><span class='Number'>16</span><span class='Ligature'>‿</span><span class='String'>'c'</span><span class='Bracket'>⟩</span><span class='Value'>•bit.</span><span class='Modifier'>_cast</span> <span class='Value'>ints</span></code> to convert each pair of numbers in <code><span class='Value'>ints</span></code> into a 2-byte character. Each element of <code><span class='Value'>𝕗</span></code> is a number or number-character pair giving width and type. The argument is encoded according to the first and decoded according to the second. The possible type characters and typical supported widths are given below.</p>
+<table>
+<thead>
+<tr>
+<th align="center">Character</th>
+<th>Widths</th>
+<th>Quality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code><span class='String'>'u'</span></code></td>
+<td>1, 8, 16, 32</td>
+<td>Unsigned integer, or boolean</td>
+</tr>
+<tr>
+<td align="center"><code><span class='String'>'i'</span></code></td>
+<td>8, 16, 32</td>
+<td>Signed integer</td>
+</tr>
+<tr>
+<td align="center"><code><span class='String'>'c'</span></code></td>
+<td>8, 16, 32</td>
+<td>Character</td>
+</tr>
+<tr>
+<td align="center"><code><span class='String'>'f'</span></code></td>
+<td>64</td>
+<td>IEEE float</td>
+</tr>
+</tbody>
+</table>
